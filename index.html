@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中国房产政策追踪</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<style>
+:root {
+  --bg: #0f1117;
+  --card: #1a1d2e;
+  --border: #2a2d3e;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --primary: #6366f1;
+  --loose: #ef4444;
+  --tight: #22c55e;
+  --neutral: #f59e0b;
+  --tag-bg: #1e293b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--text); font-family: -apple-system, 'PingFang SC', sans-serif; font-size: 13px; min-height: 100vh; }
+
+/* Layout */
+.topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; gap: 16px; height: 48px; position: sticky; top: 0; z-index: 100; }
+.topbar-title { font-size: 15px; font-weight: 600; color: #fff; white-space: nowrap; }
+.topbar-sep { color: var(--border); }
+.updated { color: var(--muted); font-size: 12px; margin-left: auto; }
+
+.tabs { display: flex; gap: 2px; padding: 2px; background: var(--tag-bg); border-radius: 8px; }
+.tab { padding: 5px 14px; border-radius: 6px; cursor: pointer; color: var(--muted); font-size: 13px; border: none; background: none; }
+.tab.active { background: var(--primary); color: #fff; }
+
+.container { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* Cards */
+.section { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.section-title { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 12px; }
+
+/* KPI row */
+.kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+.kpi { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.kpi-label { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
+.kpi-val { font-size: 22px; font-weight: 700; color: #fff; }
+.kpi-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.kpi-sub .loose { color: var(--loose); }
+.kpi-sub .tight { color: var(--tight); }
+.kpi-sub .neutral { color: var(--neutral); }
+
+/* Policy timeline */
+.policy-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
+.filter-label { color: var(--muted); font-size: 12px; }
+.pill { padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 12px; }
+.pill.active { border-color: var(--primary); background: var(--primary); color: #fff; }
+.pill.loose-pill.active { border-color: var(--loose); background: var(--loose); }
+.pill.tight-pill.active { border-color: var(--tight); background: var(--tight); }
+.pill.neutral-pill.active { border-color: var(--neutral); background: var(--neutral); }
+
+.timeline { display: flex; flex-direction: column; gap: 0; }
+.tl-item { display: flex; gap: 0; position: relative; }
+.tl-left { width: 130px; flex-shrink: 0; padding: 0 16px 0 0; text-align: right; padding-top: 12px; }
+.tl-date { font-size: 12px; color: var(--muted); }
+.tl-city { font-size: 11px; color: var(--primary); margin-top: 2px; font-weight: 600; }
+.tl-line { width: 1px; background: var(--border); position: relative; flex-shrink: 0; }
+.tl-dot { width: 10px; height: 10px; border-radius: 50%; position: absolute; left: -4.5px; top: 16px; border: 2px solid var(--card); }
+.dot-loose { background: var(--loose); }
+.dot-tight { background: var(--tight); }
+.dot-neutral { background: var(--neutral); }
+.tl-content { flex: 1; padding: 10px 0 18px 16px; }
+.tl-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+.tl-summary { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.tl-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
+.tl-tag { background: var(--tag-bg); color: var(--muted); font-size: 11px; padding: 2px 8px; border-radius: 4px; }
+.impact-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 8px; }
+.impact-loose { background: rgba(239,68,68,.15); color: var(--loose); }
+.impact-tight { background: rgba(34,197,94,.15); color: var(--tight); }
+.impact-neutral { background: rgba(245,158,11,.15); color: var(--neutral); }
+
+/* City grid */
+.city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.city-card { background: var(--tag-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; cursor: pointer; transition: border-color .2s; }
+.city-card:hover { border-color: var(--primary); }
+.city-card.active { border-color: var(--primary); background: rgba(99,102,241,.08); }
+.city-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.city-tier { font-size: 11px; color: var(--muted); }
+.city-stats { display: flex; gap: 8px; margin-top: 8px; }
+.city-stat { flex: 1; text-align: center; }
+.city-stat-val { font-size: 15px; font-weight: 700; }
+.city-stat-label { font-size: 10px; color: var(--muted); }
+.city-policy-count { display: flex; gap: 4px; margin-top: 8px; }
+.dot-count { width: 8px; height: 8px; border-radius: 50%; }
+
+/* Transaction charts */
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.chart-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
+.chart-title { font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 8px; }
+.chart-area { height: 280px; }
+
+/* Table */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { text-align: left; padding: 8px 12px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(42,45,62,.5); font-size: 12px; white-space: nowrap; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: rgba(99,102,241,.04); }
+.num { font-variant-numeric: tabular-nums; }
+.up { color: var(--loose); }
+.dn { color: var(--tight); }
+
+/* Month selector */
+.month-nav { display: flex; gap: 6px; align-items: center; }
+.month-btn { background: var(--tag-bg); border: 1px solid var(--border); color: var(--text); padding: 4px 12px; border-radius: 6px; cursor: pointer; font-size: 12px; }
+.month-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+
+/* Search */
+.search-box { display: flex; gap: 8px; margin-bottom: 12px; }
+.search-input { flex: 1; background: var(--tag-bg); border: 1px solid var(--border); color: var(--text); padding: 7px 12px; border-radius: 8px; font-size: 13px; outline: none; }
+.search-input:focus { border-color: var(--primary); }
+.search-input::placeholder { color: var(--muted); }
+
+/* Notice */
+.notice { background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.3); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.notice a { color: var(--primary); text-decoration: none; }
+
+/* Legend */
+.legend { display: flex; gap: 14px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); }
+.legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+@media (max-width: 768px) {
+  .kpi-row { grid-template-columns: repeat(2, 1fr); }
+  .chart-row { grid-template-columns: 1fr; }
+  .city-grid { grid-template-columns: repeat(2, 1fr); }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <span class="topbar-title">🏠 中国房产政策追踪</span>
+  <span class="topbar-sep">|</span>
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('policy')">政策动态</button>
+    <button class="tab" onclick="switchTab('market')">成交数据</button>
+    <button class="tab" onclick="switchTab('city')">城市概览</button>
+  </div>
+  <span class="updated" id="updatedText">数据更新：加载中…</span>
+</div>
+
+<div class="container">
+
+<!-- ============ 政策动态 ============ -->
+<div class="page active" id="page-policy">
+  <!-- KPI -->
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <!-- 筛选 -->
+  <div class="section">
+    <div class="policy-filters">
+      <span class="filter-label">城市：</span>
+      <button class="pill active" data-filter="city" data-val="">全部</button>
+      <span class="filter-label" style="margin-left:8px">类型：</span>
+      <button class="pill active" data-filter="type" data-val="">全部</button>
+      <button class="pill" data-filter="type" data-val="限购">限购</button>
+      <button class="pill" data-filter="type" data-val="限贷">限贷</button>
+      <button class="pill" data-filter="type" data-val="限售">限售</button>
+      <button class="pill" data-filter="type" data-val="金融">金融</button>
+      <button class="pill" data-filter="type" data-val="税费">税费</button>
+      <button class="pill" data-filter="type" data-val="补贴">补贴</button>
+      <span class="filter-label" style="margin-left:8px">影响：</span>
+      <button class="pill active" data-filter="impact" data-val="">全部</button>
+      <button class="pill loose-pill" data-filter="impact" data-val="宽松">宽松</button>
+      <button class="pill tight-pill" data-filter="impact" data-val="收紧">收紧</button>
+      <button class="pill neutral-pill" data-filter="impact" data-val="中性">中性</button>
+    </div>
+    <div class="search-box">
+      <input class="search-input" id="policySearch" placeholder="搜索政策标题或内容…" oninput="renderTimeline()">
+    </div>
+    <div class="timeline" id="timeline"></div>
+    <div style="text-align:center; padding:20px; color:var(--muted); font-size:12px; display:none" id="noResult">没有找到匹配的政策</div>
+  </div>
+</div>
+
+<!-- ============ 成交数据 ============ -->
+<div class="page" id="page-market">
+  <div class="section">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+      <span class="section-title" style="margin:0">月度成交</span>
+      <div class="month-nav" id="monthNav"></div>
+      <div class="legend" style="margin-left:auto">
+        <div class="legend-item"><div class="legend-dot" style="background:#6366f1"></div>新房成交(套)</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#22d3ee"></div>二手房成交(套)</div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-box">
+        <div class="chart-title">新房 vs 二手房成交量</div>
+        <div class="chart-area" id="chartVolume"></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">二手房均价（元/㎡）</div>
+        <div class="chart-area" id="chartPrice"></div>
+      </div>
+    </div>
+  </div>
+  <div class="section">
+    <div class="section-title">各城市成交明细</div>
+    <div style="overflow-x:auto">
+      <table class="data-table" id="txTable">
+        <thead>
+          <tr>
+            <th>城市</th>
+            <th>新房成交(套)</th>
+            <th>环比</th>
+            <th>二手房成交(套)</th>
+            <th>环比</th>
+            <th>二手均价(元/㎡)</th>
+            <th>环比</th>
+          </tr>
+        </thead>
+        <tbody id="txBody"></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- 趋势 -->
+  <div class="section">
+    <div class="chart-title" style="margin-bottom:10px">月度成交趋势（主要城市）</div>
+    <div style="height:320px" id="chartTrend"></div>
+  </div>
+</div>
+
+<!-- ============ 城市概览 ============ -->
+<div class="page" id="page-city">
+  <div class="notice">点击城市卡片可查看该城市所有政策历史。一线城市：北京 上海 广州 深圳</div>
+  <div class="city-grid" id="cityGrid"></div>
+  <div class="section" id="cityDetail" style="display:none; margin-top:16px">
+    <div class="section-title" id="cityDetailTitle"></div>
+    <div class="timeline" id="cityTimeline"></div>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<script>
+let policiesData = null;
+let txData = null;
+let filters = { city: '', type: '', impact: '' };
+let curMonth = null;
+let chartVol=null, chartPrc=null, chartTrend=null;
+let selectedCityDetail = null;
+
+// ── Data load ──
+async function loadData() {
+  try {
+    const [pRes, tRes] = await Promise.all([
+      fetch('./data/policies.json?t=' + Date.now()),
+      fetch('./data/transactions.json?t=' + Date.now())
+    ]);
+    policiesData = await pRes.json();
+    txData = await tRes.json();
+
+    document.getElementById('updatedText').textContent = '数据更新：' + policiesData.updated;
+    buildCityFilter();
+    renderKPI();
+    renderTimeline();
+    buildCityGrid();
+
+    // market tab
+    curMonth = txData.monthly[txData.monthly.length - 1].month;
+    buildMonthNav();
+    renderMarket();
+  } catch(e) {
+    console.error(e);
+    document.getElementById('updatedText').textContent = '数据加载失败';
+  }
+}
+
+// ── Tab ──
+function switchTab(name) {
+  document.querySelectorAll('.tab').forEach((b,i) => {
+    const names = ['policy','market','city'];
+    b.classList.toggle('active', names[i] === name);
+  });
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  if (name === 'market') setTimeout(() => { renderMarket(); }, 50);
+}
+
+// ── KPI ──
+function renderKPI() {
+  const policies = policiesData.policies;
+  const loose = policies.filter(p => p.impact === '宽松').length;
+  const tight = policies.filter(p => p.impact === '收紧').length;
+  const neutral = policies.filter(p => p.impact === '中性').length;
+  const cities30 = new Set(policies.filter(p => daysDiff(p.date) <= 30).map(p => p.city)).size;
+  const recent7 = policies.filter(p => daysDiff(p.date) <= 7).length;
+
+  const kpis = [
+    { label: '政策总数', val: policies.length, sub: `最近7天 <span class="loose">${recent7}条</span>` },
+    { label: '宽松政策', val: loose, sub: `占比 <span class="loose">${Math.round(loose/policies.length*100)}%</span>` },
+    { label: '收紧政策', val: tight, sub: `占比 <span class="tight">${Math.round(tight/policies.length*100)}%</span>` },
+    { label: '活跃城市（近30天）', val: cities30, sub: `共追踪 ${policiesData.cities.length} 个城市` },
+  ];
+  document.getElementById('kpiRow').innerHTML = kpis.map(k =>
+    `<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`
+  ).join('');
+}
+
+function daysDiff(dateStr) {
+  const today = new Date('2026-04-13');
+  const d = new Date(dateStr);
+  return Math.floor((today - d) / 86400000);
+}
+
+// ── City filter builder ──
+function buildCityFilter() {
+  const container = document.querySelector('[data-filter="city"]').parentElement;
+  const allBtn = container.querySelector('[data-filter="city"][data-val=""]');
+  policiesData.cities.forEach(city => {
+    const btn = document.createElement('button');
+    btn.className = 'pill';
+    btn.dataset.filter = 'city';
+    btn.dataset.val = city;
+    btn.textContent = city;
+    btn.onclick = () => handleFilter('city', city, btn);
+    container.insertBefore(btn, allBtn.nextSibling);
+  });
+  // actually insert after the city label — find it
+  // Re-append after city "全部" button
+  const refNode = allBtn;
+  policiesData.cities.forEach(city => {
+    const b = container.querySelector(`[data-filter="city"][data-val="${city}"]`);
+    if (b) refNode.after(b);
+  });
+  document.querySelectorAll('[data-filter]').forEach(btn => {
+    btn.onclick = () => handleFilter(btn.dataset.filter, btn.dataset.val, btn);
+  });
+}
+
+function handleFilter(type, val, btn) {
+  filters[type] = val;
+  btn.closest('.policy-filters').querySelectorAll(`[data-filter="${type}"]`).forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTimeline();
+}
+
+// ── Timeline ──
+function renderTimeline() {
+  const q = document.getElementById('policySearch').value.trim().toLowerCase();
+  let policies = [...policiesData.policies].sort((a,b) => b.date.localeCompare(a.date));
+
+  if (filters.city) policies = policies.filter(p => p.city === filters.city);
+  if (filters.type) policies = policies.filter(p => p.type === filters.type);
+  if (filters.impact) policies = policies.filter(p => p.impact === filters.impact);
+  if (q) policies = policies.filter(p =>
+    p.title.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q) || p.city.includes(q)
+  );
+
+  const el = document.getElementById('timeline');
+  const noRes = document.getElementById('noResult');
+  if (!policies.length) { el.innerHTML = ''; noRes.style.display = 'block'; return; }
+  noRes.style.display = 'none';
+
+  const impactCls = { '宽松': 'loose', '收紧': 'tight', '中性': 'neutral' };
+  const dotCls = { '宽松': 'dot-loose', '收紧': 'dot-tight', '中性': 'dot-neutral' };
+  const impactBadgeCls = { '宽松': 'impact-loose', '收紧': 'impact-tight', '中性': 'impact-neutral' };
+
+  el.innerHTML = policies.map(p => `
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-date">${p.date}</div>
+        <div class="tl-city">${p.city}</div>
+      </div>
+      <div class="tl-line"><div class="tl-dot ${dotCls[p.impact]||''}"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">${p.title}<span class="impact-badge ${impactBadgeCls[p.impact]||''}">${p.impact}</span></div>
+        <div class="tl-summary">${p.summary}</div>
+        <div class="tl-tags">${(p.tags||[]).map(t=>`<span class="tl-tag">${t}</span>`).join('')}${p.source?`<span class="tl-tag" style="color:var(--primary)">来源：${p.source}</span>`:''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Market ──
+function buildMonthNav() {
+  const nav = document.getElementById('monthNav');
+  nav.innerHTML = txData.monthly.map(m =>
+    `<button class="month-btn ${m.month===curMonth?'active':''}" onclick="selectMonth('${m.month}')">${m.month}</button>`
+  ).join('');
+}
+
+function selectMonth(m) {
+  curMonth = m;
+  document.querySelectorAll('.month-btn').forEach(b => b.classList.toggle('active', b.textContent === m));
+  renderMarket();
+}
+
+function renderMarket() {
+  const monthData = txData.monthly.find(m => m.month === curMonth);
+  const prevData = txData.monthly[txData.monthly.indexOf(monthData) - 1];
+  if (!monthData) return;
+
+  const cities = txData.cities;
+  const newVals = cities.map(c => (monthData.data[c]||{}).new || 0);
+  const secVals = cities.map(c => (monthData.data[c]||{}).second || 0);
+  const prcVals = cities.map(c => (monthData.data[c]||{}).second_avg_price || 0);
+
+  // Volume chart
+  if (!chartVol) chartVol = echarts.init(document.getElementById('chartVolume'));
+  chartVol.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', backgroundColor: '#1a1d2e', borderColor: '#2a2d3e', textStyle: { color: '#e2e8f0', fontSize: 12 } },
+    legend: { data: ['新房', '二手房'], textStyle: { color: '#94a3b8' }, top: 0 },
+    grid: { left: 60, right: 10, top: 30, bottom: 60 },
+    xAxis: { data: cities, axisLabel: { color: '#94a3b8', fontSize: 11, rotate: 45 }, axisLine: { lineStyle: { color: '#2a2d3e' } } },
+    yAxis: { axisLabel: { color: '#94a3b8', fontSize: 11 }, splitLine: { lineStyle: { color: '#2a2d3e' } } },
+    series: [
+      { name: '新房', type: 'bar', data: newVals, itemStyle: { color: '#6366f1', borderRadius: [3,3,0,0] }, barMaxWidth: 18 },
+      { name: '二手房', type: 'bar', data: secVals, itemStyle: { color: '#22d3ee', borderRadius: [3,3,0,0] }, barMaxWidth: 18 }
+    ]
+  }, true);
+
+  // Price chart
+  if (!chartPrc) chartPrc = echarts.init(document.getElementById('chartPrice'));
+  chartPrc.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', backgroundColor: '#1a1d2e', borderColor: '#2a2d3e', textStyle: { color: '#e2e8f0', fontSize: 12 }, formatter: p => `${p[0].name}<br>${p[0].marker}均价：${p[0].value.toLocaleString()} 元/㎡` },
+    grid: { left: 70, right: 10, top: 20, bottom: 60 },
+    xAxis: { data: cities, axisLabel: { color: '#94a3b8', fontSize: 11, rotate: 45 }, axisLine: { lineStyle: { color: '#2a2d3e' } } },
+    yAxis: { axisLabel: { color: '#94a3b8', fontSize: 11, formatter: v => (v/10000).toFixed(0)+'万' }, splitLine: { lineStyle: { color: '#2a2d3e' } } },
+    series: [{ type: 'bar', data: prcVals, itemStyle: { color: (p) => prcVals[p.dataIndex] > 40000 ? '#f87171' : prcVals[p.dataIndex] > 20000 ? '#fb923c' : '#34d399', borderRadius: [3,3,0,0] }, barMaxWidth: 18 }]
+  }, true);
+
+  // Table
+  const tbody = document.getElementById('txBody');
+  tbody.innerHTML = cities.map(city => {
+    const cur = monthData.data[city] || {};
+    const prev = prevData ? (prevData.data[city] || {}) : {};
+    const newChg = prev.new ? (cur.new - prev.new) / prev.new * 100 : null;
+    const secChg = prev.second ? (cur.second - prev.second) / prev.second * 100 : null;
+    const prcChg = prev.second_avg_price ? (cur.second_avg_price - prev.second_avg_price) / prev.second_avg_price * 100 : null;
+    const fmt = (v, x) => v === null ? '--' : `<span class="${x > 0 ? 'up' : 'dn'}">${x > 0 ? '+' : ''}${x.toFixed(1)}%</span>`;
+    return `<tr>
+      <td><b>${city}</b></td>
+      <td class="num">${(cur.new||0).toLocaleString()}</td>
+      <td>${fmt(newChg, newChg)}</td>
+      <td class="num">${(cur.second||0).toLocaleString()}</td>
+      <td>${fmt(secChg, secChg)}</td>
+      <td class="num">${(cur.second_avg_price||0).toLocaleString()}</td>
+      <td>${fmt(prcChg, prcChg)}</td>
+    </tr>`;
+  }).join('');
+
+  // Trend chart (top cities)
+  const topCities = ['北京','上海','广州','深圳','成都','杭州'];
+  const months = txData.monthly.map(m => m.month);
+  if (!chartTrend) chartTrend = echarts.init(document.getElementById('chartTrend'));
+  const colors = ['#6366f1','#22d3ee','#f59e0b','#ef4444','#34d399','#a78bfa'];
+  chartTrend.setOption({
+    backgroundColor: 'transparent',
+    tooltip: { trigger: 'axis', backgroundColor: '#1a1d2e', borderColor: '#2a2d3e', textStyle: { color: '#e2e8f0', fontSize: 12 } },
+    legend: { data: topCities, textStyle: { color: '#94a3b8' }, top: 0 },
+    grid: { left: 60, right: 20, top: 36, bottom: 30 },
+    xAxis: { data: months, axisLabel: { color: '#94a3b8', fontSize: 11 }, axisLine: { lineStyle: { color: '#2a2d3e' } } },
+    yAxis: { axisLabel: { color: '#94a3b8', fontSize: 11 }, splitLine: { lineStyle: { color: '#2a2d3e' } } },
+    series: topCities.map((city, i) => ({
+      name: city, type: 'line', smooth: true,
+      data: txData.monthly.map(m => (m.data[city]||{}).new || 0),
+      itemStyle: { color: colors[i] }, lineStyle: { color: colors[i], width: 2 },
+      symbolSize: 6, areaStyle: { color: colors[i], opacity: .05 }
+    }))
+  }, true);
+}
+
+// ── City Grid ──
+const TIERS = {
+  '北京':'一线','上海':'一线','广州':'一线','深圳':'一线',
+  '成都':'强二线','杭州':'强二线','重庆':'强二线','武汉':'强二线',
+  '西安':'强二线','南京':'强二线','苏州':'强二线','长沙':'强二线',
+  '郑州':'二线','天津':'二线','宁波':'二线','合肥':'二线','济南':'二线','青岛':'二线'
+};
+const TIER_COLORS = { '一线': '#6366f1', '强二线': '#22d3ee', '二线': '#94a3b8' };
+
+function buildCityGrid() {
+  const grid = document.getElementById('cityGrid');
+  const lastMonth = txData.monthly[txData.monthly.length - 1];
+  const prevMonth = txData.monthly[txData.monthly.length - 2];
+
+  grid.innerHTML = policiesData.cities.map(city => {
+    const policies = policiesData.policies.filter(p => p.city === city);
+    const loose = policies.filter(p => p.impact === '宽松').length;
+    const tight = policies.filter(p => p.impact === '收紧').length;
+    const tier = TIERS[city] || '二线';
+    const cur = lastMonth.data[city] || {};
+    const prev = prevMonth ? (prevMonth.data[city] || {}) : {};
+    const chg = prev.new ? ((cur.new - prev.new) / prev.new * 100).toFixed(1) : null;
+    const dots = [
+      ...Array(loose).fill('<div class="dot-count dot-loose" title="宽松"></div>'),
+      ...Array(tight).fill('<div class="dot-count dot-tight" title="收紧"></div>')
+    ].slice(0, 8).join('');
+
+    return `<div class="city-card" onclick="showCityDetail('${city}')" id="cc-${city}">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="city-name">${city}</div>
+        <span style="font-size:10px;color:${TIER_COLORS[tier]||'#94a3b8'};font-weight:600">${tier}</span>
+      </div>
+      <div class="city-stats">
+        <div class="city-stat">
+          <div class="city-stat-val">${policies.length}</div>
+          <div class="city-stat-label">政策数</div>
+        </div>
+        <div class="city-stat">
+          <div class="city-stat-val" style="color:var(--loose)">${loose}</div>
+          <div class="city-stat-label">宽松</div>
+        </div>
+        <div class="city-stat">
+          <div class="city-stat-val">${chg !== null ? `<span class="${+chg>=0?'up':'dn'}">${+chg>=0?'+':''}${chg}%</span>` : '--'}</div>
+          <div class="city-stat-label">新房环比</div>
+        </div>
+      </div>
+      <div class="city-policy-count">${dots}</div>
+    </div>`;
+  }).join('');
+}
+
+function showCityDetail(city) {
+  document.querySelectorAll('.city-card').forEach(c => c.classList.remove('active'));
+  document.getElementById('cc-' + city).classList.add('active');
+
+  const policies = policiesData.policies.filter(p => p.city === city).sort((a,b) => b.date.localeCompare(a.date));
+  const detail = document.getElementById('cityDetail');
+  document.getElementById('cityDetailTitle').textContent = city + ' 政策历史（共' + policies.length + '条）';
+
+  const impactCls = { '宽松': 'impact-loose', '收紧': 'impact-tight', '中性': 'impact-neutral' };
+  const dotCls = { '宽松': 'dot-loose', '收紧': 'dot-tight', '中性': 'dot-neutral' };
+
+  document.getElementById('cityTimeline').innerHTML = policies.map(p => `
+    <div class="tl-item">
+      <div class="tl-left"><div class="tl-date">${p.date}</div></div>
+      <div class="tl-line"><div class="tl-dot ${dotCls[p.impact]||''}"></div></div>
+      <div class="tl-content">
+        <div class="tl-title">${p.title}<span class="impact-badge ${impactCls[p.impact]||''}">${p.impact}</span></div>
+        <div class="tl-summary">${p.summary}</div>
+        <div class="tl-tags">${(p.tags||[]).map(t=>`<span class="tl-tag">${t}</span>`).join('')}</div>
+      </div>
+    </div>
+  `).join('');
+
+  detail.style.display = 'block';
+  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+loadData();
+</script>
+</body>
+</html>

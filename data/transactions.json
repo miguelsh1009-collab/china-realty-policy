@@ -1,0 +1,76 @@
+{
+  "updated": "2026-04-13",
+  "unit": "套",
+  "cities": ["北京","上海","广州","深圳","成都","杭州","重庆","武汉","西安","南京","苏州","长沙","郑州","天津","宁波","合肥","济南","青岛"],
+  "monthly": [
+    {
+      "month": "2026-01",
+      "data": {
+        "北京": {"new": 8520, "second": 12300, "new_area": 95.2, "second_avg_price": 68500},
+        "上海": {"new": 9800, "second": 18600, "new_area": 102.5, "second_avg_price": 72000},
+        "广州": {"new": 7200, "second": 9800, "new_area": 98.3, "second_avg_price": 32000},
+        "深圳": {"new": 3100, "second": 7200, "new_area": 88.6, "second_avg_price": 68000},
+        "成都": {"new": 11200, "second": 14500, "new_area": 105.2, "second_avg_price": 18500},
+        "杭州": {"new": 6800, "second": 8900, "new_area": 99.8, "second_avg_price": 28000},
+        "重庆": {"new": 9500, "second": 8200, "new_area": 110.5, "second_avg_price": 13500},
+        "武汉": {"new": 7800, "second": 7600, "new_area": 108.2, "second_avg_price": 16800},
+        "西安": {"new": 8100, "second": 6500, "new_area": 106.8, "second_avg_price": 15200},
+        "南京": {"new": 5200, "second": 7800, "new_area": 101.3, "second_avg_price": 26500},
+        "苏州": {"new": 4800, "second": 6200, "new_area": 103.5, "second_avg_price": 22000},
+        "长沙": {"new": 8900, "second": 7100, "new_area": 109.2, "second_avg_price": 12800},
+        "郑州": {"new": 7200, "second": 5800, "new_area": 112.5, "second_avg_price": 12200},
+        "天津": {"new": 5600, "second": 9200, "new_area": 107.8, "second_avg_price": 18500},
+        "宁波": {"new": 4200, "second": 5600, "new_area": 104.2, "second_avg_price": 20800},
+        "合肥": {"new": 5800, "second": 6200, "new_area": 103.8, "second_avg_price": 17500},
+        "济南": {"new": 4500, "second": 5200, "new_area": 108.5, "second_avg_price": 14200},
+        "青岛": {"new": 5200, "second": 6800, "new_area": 106.2, "second_avg_price": 16500}
+      }
+    },
+    {
+      "month": "2026-02",
+      "data": {
+        "北京": {"new": 6200, "second": 10800, "new_area": 95.2, "second_avg_price": 68800},
+        "上海": {"new": 7200, "second": 15200, "new_area": 102.5, "second_avg_price": 72500},
+        "广州": {"new": 5800, "second": 8200, "new_area": 98.3, "second_avg_price": 32200},
+        "深圳": {"new": 2600, "second": 6100, "new_area": 88.6, "second_avg_price": 68200},
+        "成都": {"new": 8500, "second": 11200, "new_area": 105.2, "second_avg_price": 18800},
+        "杭州": {"new": 5200, "second": 7100, "new_area": 99.8, "second_avg_price": 28500},
+        "重庆": {"new": 7200, "second": 6800, "new_area": 110.5, "second_avg_price": 13800},
+        "武汉": {"new": 6100, "second": 6200, "new_area": 108.2, "second_avg_price": 17000},
+        "西安": {"new": 6200, "second": 5200, "new_area": 106.8, "second_avg_price": 15500},
+        "南京": {"new": 4100, "second": 6200, "new_area": 101.3, "second_avg_price": 26800},
+        "苏州": {"new": 3800, "second": 5100, "new_area": 103.5, "second_avg_price": 22300},
+        "长沙": {"new": 6800, "second": 5800, "new_area": 109.2, "second_avg_price": 13000},
+        "郑州": {"new": 5600, "second": 4800, "new_area": 112.5, "second_avg_price": 12500},
+        "天津": {"new": 4200, "second": 7500, "new_area": 107.8, "second_avg_price": 18800},
+        "宁波": {"new": 3200, "second": 4600, "new_area": 104.2, "second_avg_price": 21000},
+        "合肥": {"new": 4500, "second": 5100, "new_area": 103.8, "second_avg_price": 17800},
+        "济南": {"new": 3600, "second": 4200, "new_area": 108.5, "second_avg_price": 14500},
+        "青岛": {"new": 4100, "second": 5500, "new_area": 106.2, "second_avg_price": 16800}
+      }
+    },
+    {
+      "month": "2026-03",
+      "data": {
+        "北京": {"new": 10200, "second": 16500, "new_area": 95.2, "second_avg_price": 69000},
+        "上海": {"new": 12800, "second": 22100, "new_area": 102.5, "second_avg_price": 73000},
+        "广州": {"new": 9500, "second": 13200, "new_area": 98.3, "second_avg_price": 32500},
+        "深圳": {"new": 4200, "second": 9800, "new_area": 88.6, "second_avg_price": 68800},
+        "成都": {"new": 14800, "second": 18900, "new_area": 105.2, "second_avg_price": 19200},
+        "杭州": {"new": 8900, "second": 11200, "new_area": 99.8, "second_avg_price": 29000},
+        "重庆": {"new": 12500, "second": 10800, "new_area": 110.5, "second_avg_price": 14000},
+        "武汉": {"new": 10200, "second": 9800, "new_area": 108.2, "second_avg_price": 17200},
+        "西安": {"new": 10800, "second": 8500, "new_area": 106.8, "second_avg_price": 15800},
+        "南京": {"new": 6800, "second": 9800, "new_area": 101.3, "second_avg_price": 27000},
+        "苏州": {"new": 6200, "second": 8100, "new_area": 103.5, "second_avg_price": 22500},
+        "长沙": {"new": 11500, "second": 9200, "new_area": 109.2, "second_avg_price": 13200},
+        "郑州": {"new": 9500, "second": 7600, "new_area": 112.5, "second_avg_price": 12800},
+        "天津": {"new": 7200, "second": 11800, "new_area": 107.8, "second_avg_price": 19000},
+        "宁波": {"new": 5600, "second": 7200, "new_area": 104.2, "second_avg_price": 21200},
+        "合肥": {"new": 7500, "second": 8000, "new_area": 103.8, "second_avg_price": 18000},
+        "济南": {"new": 5800, "second": 6800, "new_area": 108.5, "second_avg_price": 14800},
+        "青岛": {"new": 6800, "second": 8600, "new_area": 106.2, "second_avg_price": 17000}
+      }
+    }
+  ]
+}

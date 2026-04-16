@@ -1,0 +1,40 @@
+name: Daily Policy Update
+
+on:
+  schedule:
+    - cron: '0 2 * * *'   # 每天北京时间10:00 (UTC 02:00)
+  workflow_dispatch:        # 支持手动触发
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: Run policy scraper
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python scripts/scrape_policies.py
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "policy-bot"
+          git config user.email "bot@github-actions"
+          git add data/policies.json data/transactions.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: 自动更新政策数据 $(date +'%Y-%m-%d')"
+            git push
+          fi
