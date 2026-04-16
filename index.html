@@ -520,8 +520,8 @@ function buildCityGrid() {
           <div class="city-stat-label">政策数</div>
         </div>
         <div class="city-stat">
-          <div class="city-stat-val" style="color:var(--loose)">${loose}</div>
-          <div class="city-stat-label">宽松</div>
+          <div class="city-stat-val" style="color:#ef4444">${high+mid+low}</div>
+          <div class="city-stat-label">利好</div>
         </div>
         <div class="city-stat">
           <div class="city-stat-val">${chg !== null ? `<span class="${+chg>=0?'up':'dn'}">${+chg>=0?'+':''}${chg}%</span>` : '--'}</div>
