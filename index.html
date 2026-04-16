@@ -50,13 +50,15 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 .kpi-sub .neutral { color: var(--neutral); }
 
 /* Policy timeline */
-.policy-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; align-items: center; }
-.filter-label { color: var(--muted); font-size: 12px; }
+.policy-filters { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+.filter-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-label { color: var(--muted); font-size: 12px; white-space: nowrap; min-width: 36px; }
 .pill { padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); background: transparent; color: var(--muted); cursor: pointer; font-size: 12px; }
 .pill.active { border-color: var(--primary); background: var(--primary); color: #fff; }
-.pill.loose-pill.active { border-color: var(--loose); background: var(--loose); }
-.pill.tight-pill.active { border-color: var(--tight); background: var(--tight); }
-.pill.neutral-pill.active { border-color: var(--neutral); background: var(--neutral); }
+.pill.high-pill.active  { border-color: #ef4444; background: #ef4444; color:#fff; }
+.pill.mid-pill.active   { border-color: #f97316; background: #f97316; color:#fff; }
+.pill.low-pill.active   { border-color: #eab308; background: #eab308; color:#fff; }
+.pill.neutral-pill.active { border-color: var(--neutral); background: var(--neutral); color:#fff; }
 
 .timeline { display: flex; flex-direction: column; gap: 0; }
 .tl-item { display: flex; gap: 0; position: relative; }
@@ -65,8 +67,9 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 .tl-city { font-size: 11px; color: var(--primary); margin-top: 2px; font-weight: 600; }
 .tl-line { width: 1px; background: var(--border); position: relative; flex-shrink: 0; }
 .tl-dot { width: 10px; height: 10px; border-radius: 50%; position: absolute; left: -4.5px; top: 16px; border: 2px solid var(--card); }
-.dot-loose { background: var(--loose); }
-.dot-tight { background: var(--tight); }
+.dot-high    { background: #ef4444; }
+.dot-mid     { background: #f97316; }
+.dot-low     { background: #eab308; }
 .dot-neutral { background: var(--neutral); }
 .tl-content { flex: 1; padding: 10px 0 18px 16px; }
 .tl-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
@@ -74,8 +77,9 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 .tl-tags { display: flex; gap: 4px; margin-top: 6px; flex-wrap: wrap; }
 .tl-tag { background: var(--tag-bg); color: var(--muted); font-size: 11px; padding: 2px 8px; border-radius: 4px; }
 .impact-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-left: 8px; }
-.impact-loose { background: rgba(239,68,68,.15); color: var(--loose); }
-.impact-tight { background: rgba(34,197,94,.15); color: var(--tight); }
+.impact-high    { background: rgba(239,68,68,.15);  color: #ef4444; }
+.impact-mid     { background: rgba(249,115,22,.15); color: #f97316; }
+.impact-low     { background: rgba(234,179,8,.15);  color: #eab308; }
 .impact-neutral { background: rgba(245,158,11,.15); color: var(--neutral); }
 
 /* City grid */
@@ -91,6 +95,9 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 .city-stat-label { font-size: 10px; color: var(--muted); }
 .city-policy-count { display: flex; gap: 4px; margin-top: 8px; }
 .dot-count { width: 8px; height: 8px; border-radius: 50%; }
+.dot-count.dot-high { background: #ef4444; }
+.dot-count.dot-mid  { background: #f97316; }
+.dot-count.dot-low  { background: #eab308; }
 
 /* Transaction charts */
 .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -158,21 +165,29 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
   <!-- 筛选 -->
   <div class="section">
     <div class="policy-filters">
-      <span class="filter-label">城市：</span>
-      <button class="pill active" data-filter="city" data-val="">全部</button>
-      <span class="filter-label" style="margin-left:8px">类型：</span>
-      <button class="pill active" data-filter="type" data-val="">全部</button>
-      <button class="pill" data-filter="type" data-val="限购">限购</button>
-      <button class="pill" data-filter="type" data-val="限贷">限贷</button>
-      <button class="pill" data-filter="type" data-val="限售">限售</button>
-      <button class="pill" data-filter="type" data-val="金融">金融</button>
-      <button class="pill" data-filter="type" data-val="税费">税费</button>
-      <button class="pill" data-filter="type" data-val="补贴">补贴</button>
-      <span class="filter-label" style="margin-left:8px">影响：</span>
-      <button class="pill active" data-filter="impact" data-val="">全部</button>
-      <button class="pill loose-pill" data-filter="impact" data-val="宽松">宽松</button>
-      <button class="pill tight-pill" data-filter="impact" data-val="收紧">收紧</button>
-      <button class="pill neutral-pill" data-filter="impact" data-val="中性">中性</button>
+      <div class="filter-row" id="cityFilterRow">
+        <span class="filter-label">城市：</span>
+        <button class="pill active" data-filter="city" data-val="">全部</button>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">类型：</span>
+        <button class="pill active" data-filter="type" data-val="">全部</button>
+        <button class="pill" data-filter="type" data-val="限购">限购</button>
+        <button class="pill" data-filter="type" data-val="限贷">限贷</button>
+        <button class="pill" data-filter="type" data-val="限售">限售</button>
+        <button class="pill" data-filter="type" data-val="金融">金融</button>
+        <button class="pill" data-filter="type" data-val="税费">税费</button>
+        <button class="pill" data-filter="type" data-val="补贴">补贴</button>
+        <button class="pill" data-filter="type" data-val="土地">土地</button>
+      </div>
+      <div class="filter-row">
+        <span class="filter-label">力度：</span>
+        <button class="pill active" data-filter="impact" data-val="">全部</button>
+        <button class="pill high-pill"    data-filter="impact" data-val="重大利好">重大利好</button>
+        <button class="pill mid-pill"     data-filter="impact" data-val="适度利好">适度利好</button>
+        <button class="pill low-pill"     data-filter="impact" data-val="温和利好">温和利好</button>
+        <button class="pill neutral-pill" data-filter="impact" data-val="中性">中性</button>
+      </div>
     </div>
     <div class="search-box">
       <input class="search-input" id="policySearch" placeholder="搜索政策标题或内容…" oninput="renderTimeline()">
@@ -290,17 +305,17 @@ function switchTab(name) {
 // ── KPI ──
 function renderKPI() {
   const policies = policiesData.policies;
-  const loose = policies.filter(p => p.impact === '宽松').length;
-  const tight = policies.filter(p => p.impact === '收紧').length;
-  const neutral = policies.filter(p => p.impact === '中性').length;
+  const high = policies.filter(p => p.impact === '重大利好').length;
+  const mid  = policies.filter(p => p.impact === '适度利好').length;
+  const low  = policies.filter(p => p.impact === '温和利好').length;
   const cities30 = new Set(policies.filter(p => daysDiff(p.date) <= 30).map(p => p.city)).size;
   const recent7 = policies.filter(p => daysDiff(p.date) <= 7).length;
 
   const kpis = [
-    { label: '政策总数', val: policies.length, sub: `最近7天 <span class="loose">${recent7}条</span>` },
-    { label: '宽松政策', val: loose, sub: `占比 <span class="loose">${Math.round(loose/policies.length*100)}%</span>` },
-    { label: '收紧政策', val: tight, sub: `占比 <span class="tight">${Math.round(tight/policies.length*100)}%</span>` },
+    { label: '政策总数', val: policies.length, sub: `最近7天新增 <span class="loose">${recent7}条</span>` },
+    { label: '重大利好', val: high, sub: `适度利好 ${mid} 条 · 温和利好 ${low} 条` },
     { label: '活跃城市（近30天）', val: cities30, sub: `共追踪 ${policiesData.cities.length} 个城市` },
+    { label: '宽松政策占比', val: Math.round((high+mid+low)/policies.length*100)+'%', sub: `共 ${high+mid+low} 条促进政策` },
   ];
   document.getElementById('kpiRow').innerHTML = kpis.map(k =>
     `<div class="kpi"><div class="kpi-label">${k.label}</div><div class="kpi-val">${k.val}</div><div class="kpi-sub">${k.sub}</div></div>`
@@ -315,23 +330,15 @@ function daysDiff(dateStr) {
 
 // ── City filter builder ──
 function buildCityFilter() {
-  const container = document.querySelector('[data-filter="city"]').parentElement;
-  const allBtn = container.querySelector('[data-filter="city"][data-val=""]');
+  const row = document.getElementById('cityFilterRow');
+  const allBtn = row.querySelector('[data-filter="city"][data-val=""]');
   policiesData.cities.forEach(city => {
     const btn = document.createElement('button');
     btn.className = 'pill';
     btn.dataset.filter = 'city';
     btn.dataset.val = city;
     btn.textContent = city;
-    btn.onclick = () => handleFilter('city', city, btn);
-    container.insertBefore(btn, allBtn.nextSibling);
-  });
-  // actually insert after the city label — find it
-  // Re-append after city "全部" button
-  const refNode = allBtn;
-  policiesData.cities.forEach(city => {
-    const b = container.querySelector(`[data-filter="city"][data-val="${city}"]`);
-    if (b) refNode.after(b);
+    row.appendChild(btn);
   });
   document.querySelectorAll('[data-filter]').forEach(btn => {
     btn.onclick = () => handleFilter(btn.dataset.filter, btn.dataset.val, btn);
@@ -362,9 +369,8 @@ function renderTimeline() {
   if (!policies.length) { el.innerHTML = ''; noRes.style.display = 'block'; return; }
   noRes.style.display = 'none';
 
-  const impactCls = { '宽松': 'loose', '收紧': 'tight', '中性': 'neutral' };
-  const dotCls = { '宽松': 'dot-loose', '收紧': 'dot-tight', '中性': 'dot-neutral' };
-  const impactBadgeCls = { '宽松': 'impact-loose', '收紧': 'impact-tight', '中性': 'impact-neutral' };
+  const dotCls = { '重大利好': 'dot-high', '适度利好': 'dot-mid', '温和利好': 'dot-low', '中性': 'dot-neutral' };
+  const impactBadgeCls = { '重大利好': 'impact-high', '适度利好': 'impact-mid', '温和利好': 'impact-low', '中性': 'impact-neutral' };
 
   el.innerHTML = policies.map(p => `
     <div class="tl-item">
@@ -489,15 +495,17 @@ function buildCityGrid() {
 
   grid.innerHTML = policiesData.cities.map(city => {
     const policies = policiesData.policies.filter(p => p.city === city);
-    const loose = policies.filter(p => p.impact === '宽松').length;
-    const tight = policies.filter(p => p.impact === '收紧').length;
+    const high = policies.filter(p => p.impact === '重大利好').length;
+    const mid  = policies.filter(p => p.impact === '适度利好').length;
+    const low  = policies.filter(p => p.impact === '温和利好').length;
     const tier = TIERS[city] || '二线';
     const cur = lastMonth.data[city] || {};
     const prev = prevMonth ? (prevMonth.data[city] || {}) : {};
     const chg = prev.new ? ((cur.new - prev.new) / prev.new * 100).toFixed(1) : null;
     const dots = [
-      ...Array(loose).fill('<div class="dot-count dot-loose" title="宽松"></div>'),
-      ...Array(tight).fill('<div class="dot-count dot-tight" title="收紧"></div>')
+      ...Array(high).fill('<div class="dot-count dot-high" title="重大利好"></div>'),
+      ...Array(mid).fill('<div class="dot-count dot-mid" title="适度利好"></div>'),
+      ...Array(low).fill('<div class="dot-count dot-low" title="温和利好"></div>'),
     ].slice(0, 8).join('');
 
     return `<div class="city-card" onclick="showCityDetail('${city}')" id="cc-${city}">
@@ -532,8 +540,8 @@ function showCityDetail(city) {
   const detail = document.getElementById('cityDetail');
   document.getElementById('cityDetailTitle').textContent = city + ' 政策历史（共' + policies.length + '条）';
 
-  const impactCls = { '宽松': 'impact-loose', '收紧': 'impact-tight', '中性': 'impact-neutral' };
-  const dotCls = { '宽松': 'dot-loose', '收紧': 'dot-tight', '中性': 'dot-neutral' };
+  const impactCls = { '重大利好': 'impact-high', '适度利好': 'impact-mid', '温和利好': 'impact-low', '中性': 'impact-neutral' };
+  const dotCls = { '重大利好': 'dot-high', '适度利好': 'dot-mid', '温和利好': 'dot-low', '中性': 'dot-neutral' };
 
   document.getElementById('cityTimeline').innerHTML = policies.map(p => `
     <div class="tl-item">
