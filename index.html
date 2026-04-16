@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>中国房产政策追踪</title>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
 <style>
 :root {
   --bg: #0f1117;
@@ -283,13 +283,12 @@ async function loadData() {
     renderTimeline();
     buildCityGrid();
 
-    // market tab
+    // market tab — defer until tab is visible
     curMonth = txData.monthly[txData.monthly.length - 1].month;
     buildMonthNav();
-    renderMarket();
   } catch(e) {
     console.error(e);
-    document.getElementById('updatedText').textContent = '数据加载失败';
+    document.getElementById('updatedText').textContent = '数据加载失败：' + e.message;
   }
 }
 
