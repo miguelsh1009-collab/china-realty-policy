@@ -248,7 +248,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
   </div>
   <!-- 趋势 -->
   <div class="section">
-    <div class="chart-title" style="margin-bottom:10px">月度成交趋势（主要城市）</div>
+    <div class="chart-title" style="margin-bottom:10px">月度成交趋势（主要城市，优先二手房口径）</div>
     <div style="height:320px" id="chartTrend"></div>
   </div>
 </div>
@@ -481,7 +481,7 @@ function renderMarket() {
   }).join('');
 
   // Trend chart (top cities)
-  const topCities = ['北京','上海','广州','深圳','成都','杭州'];
+  const topCities = ['北京','上海','广州','深圳','杭州','青岛'];
   const months = txData.monthly.map(m => m.month);
   if (!chartTrend) chartTrend = echarts.init(document.getElementById('chartTrend'));
   const colors = ['#6366f1','#22d3ee','#f59e0b','#ef4444','#34d399','#a78bfa'];
@@ -494,7 +494,12 @@ function renderMarket() {
     yAxis: { axisLabel: { color: palette.muted, fontSize: 11 }, splitLine: { lineStyle: { color: palette.border } } },
     series: topCities.map((city, i) => ({
       name: city, type: 'line', smooth: true,
-      data: txData.monthly.map(m => hasValue((m.data[city]||{}).new) ? m.data[city].new : null),
+      data: txData.monthly.map(m => {
+        const row = m.data[city] || {};
+        if (hasValue(row.second)) return row.second;
+        if (hasValue(row.new)) return row.new;
+        return null;
+      }),
       itemStyle: { color: colors[i] }, lineStyle: { color: colors[i], width: 2 },
       symbolSize: 6, areaStyle: { color: colors[i], opacity: .05 }
     }))
