@@ -7,23 +7,46 @@
 <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
 <style>
 :root {
-  --bg: #0f1117;
-  --card: #1a1d2e;
-  --border: #2a2d3e;
-  --text: #e2e8f0;
-  --muted: #94a3b8;
-  --primary: #6366f1;
+  color-scheme: light dark;
+  --bg: #f6f7fb;
+  --card: #ffffff;
+  --border: #d9dee8;
+  --text: #1f2937;
+  --title: #111827;
+  --muted: #64748b;
+  --primary: #2563eb;
   --loose: #ef4444;
-  --tight: #22c55e;
-  --neutral: #f59e0b;
-  --tag-bg: #1e293b;
+  --tight: #16a34a;
+  --neutral: #d97706;
+  --tag-bg: #eef2f7;
+  --hover-bg: rgba(37,99,235,.06);
+  --notice-bg: rgba(37,99,235,.08);
+  --notice-border: rgba(37,99,235,.25);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d2e;
+    --border: #2a2d3e;
+    --text: #e2e8f0;
+    --title: #ffffff;
+    --muted: #94a3b8;
+    --primary: #6366f1;
+    --loose: #ef4444;
+    --tight: #22c55e;
+    --neutral: #f59e0b;
+    --tag-bg: #1e293b;
+    --hover-bg: rgba(99,102,241,.04);
+    --notice-bg: rgba(99,102,241,.08);
+    --notice-border: rgba(99,102,241,.3);
+  }
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { background: var(--bg); color: var(--text); font-family: -apple-system, 'PingFang SC', sans-serif; font-size: 13px; min-height: 100vh; }
 
 /* Layout */
 .topbar { background: var(--card); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; gap: 16px; height: 48px; position: sticky; top: 0; z-index: 100; }
-.topbar-title { font-size: 15px; font-weight: 600; color: #fff; white-space: nowrap; }
+.topbar-title { font-size: 15px; font-weight: 600; color: var(--title); white-space: nowrap; }
 .topbar-sep { color: var(--border); }
 .updated { color: var(--muted); font-size: 12px; margin-left: auto; }
 
@@ -43,7 +66,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
 .kpi { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
 .kpi-label { color: var(--muted); font-size: 12px; margin-bottom: 4px; }
-.kpi-val { font-size: 22px; font-weight: 700; color: #fff; }
+.kpi-val { font-size: 22px; font-weight: 700; color: var(--title); }
 .kpi-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
 .kpi-sub .loose { color: var(--loose); }
 .kpi-sub .tight { color: var(--tight); }
@@ -84,23 +107,6 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 .impact-low     { background: rgba(234,179,8,.15);  color: #eab308; }
 .impact-neutral { background: rgba(245,158,11,.15); color: var(--neutral); }
 
-/* City grid */
-.city-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
-.city-card { background: var(--tag-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px; cursor: pointer; transition: border-color .2s; }
-.city-card:hover { border-color: var(--primary); }
-.city-card.active { border-color: var(--primary); background: rgba(99,102,241,.08); }
-.city-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-.city-tier { font-size: 11px; color: var(--muted); }
-.city-stats { display: flex; gap: 8px; margin-top: 8px; }
-.city-stat { flex: 1; text-align: center; }
-.city-stat-val { font-size: 15px; font-weight: 700; }
-.city-stat-label { font-size: 10px; color: var(--muted); }
-.city-policy-count { display: flex; gap: 4px; margin-top: 8px; }
-.dot-count { width: 8px; height: 8px; border-radius: 50%; }
-.dot-count.dot-high { background: #ef4444; }
-.dot-count.dot-mid  { background: #f97316; }
-.dot-count.dot-low  { background: #eab308; }
-
 /* Transaction charts */
 .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .chart-box { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px; }
@@ -110,9 +116,9 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 /* Table */
 .data-table { width: 100%; border-collapse: collapse; }
 .data-table th { text-align: left; padding: 8px 12px; font-size: 11px; color: var(--muted); border-bottom: 1px solid var(--border); white-space: nowrap; }
-.data-table td { padding: 10px 12px; border-bottom: 1px solid rgba(42,45,62,.5); font-size: 12px; white-space: nowrap; }
+.data-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 12px; white-space: nowrap; }
 .data-table tr:last-child td { border-bottom: none; }
-.data-table tr:hover td { background: rgba(99,102,241,.04); }
+.data-table tr:hover td { background: var(--hover-bg); }
 .num { font-variant-numeric: tabular-nums; }
 .up { color: var(--loose); }
 .dn { color: var(--tight); }
@@ -129,7 +135,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 .search-input::placeholder { color: var(--muted); }
 
 /* Notice */
-.notice { background: rgba(99,102,241,.08); border: 1px solid rgba(99,102,241,.3); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
+.notice { background: var(--notice-bg); border: 1px solid var(--notice-border); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); margin-bottom: 14px; }
 .notice a { color: var(--primary); text-decoration: none; }
 
 /* Legend */
@@ -140,7 +146,6 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 @media (max-width: 768px) {
   .kpi-row { grid-template-columns: repeat(2, 1fr); }
   .chart-row { grid-template-columns: 1fr; }
-  .city-grid { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -152,7 +157,6 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
   <div class="tabs">
     <button class="tab active" onclick="switchTab('policy')">政策动态</button>
     <button class="tab" onclick="switchTab('market')">成交数据</button>
-    <button class="tab" onclick="switchTab('city')">城市概览</button>
   </div>
   <span class="updated" id="updatedText">数据更新：加载中…</span>
 </div>
@@ -210,6 +214,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
         <div class="legend-item"><div class="legend-dot" style="background:#22d3ee"></div>二手房成交(套)</div>
       </div>
     </div>
+    <div class="notice" id="txNote" style="display:none"></div>
     <div class="chart-row">
       <div class="chart-box">
         <div class="chart-title">新房 vs 二手房成交量</div>
@@ -234,6 +239,7 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
             <th>环比</th>
             <th>二手均价(元/㎡)</th>
             <th>环比</th>
+            <th>来源/口径</th>
           </tr>
         </thead>
         <tbody id="txBody"></tbody>
@@ -247,16 +253,6 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
   </div>
 </div>
 
-<!-- ============ 城市概览 ============ -->
-<div class="page" id="page-city">
-  <div class="notice">点击城市卡片可查看该城市所有政策历史。一线城市：北京 上海 广州 深圳</div>
-  <div class="city-grid" id="cityGrid"></div>
-  <div class="section" id="cityDetail" style="display:none; margin-top:16px">
-    <div class="section-title" id="cityDetailTitle"></div>
-    <div class="timeline" id="cityTimeline"></div>
-  </div>
-</div>
-
 </div><!-- /container -->
 
 <script>
@@ -265,7 +261,6 @@ let txData = null;
 let filters = { city: '', type: '', impact: '' };
 let curMonth = null;
 let chartVol=null, chartPrc=null, chartTrend=null;
-let selectedCityDetail = null;
 
 // ── Data load ──
 async function loadData() {
@@ -281,7 +276,6 @@ async function loadData() {
     buildCityFilter();
     renderKPI();
     renderTimeline();
-    buildCityGrid();
 
     // market tab — defer until tab is visible
     curMonth = txData.monthly[txData.monthly.length - 1].month;
@@ -295,7 +289,7 @@ async function loadData() {
 // ── Tab ──
 function switchTab(name) {
   document.querySelectorAll('.tab').forEach((b,i) => {
-    const names = ['policy','market','city'];
+    const names = ['policy','market'];
     b.classList.toggle('active', names[i] === name);
   });
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -324,7 +318,7 @@ function renderKPI() {
 }
 
 function daysDiff(dateStr) {
-  const today = new Date('2026-04-13');
+  const today = new Date(policiesData.updated || new Date().toISOString().slice(0, 10));
   const d = new Date(dateStr);
   return Math.floor((today - d) / 86400000);
 }
@@ -403,25 +397,42 @@ function selectMonth(m) {
   renderMarket();
 }
 
+function chartPalette() {
+  const css = getComputedStyle(document.documentElement);
+  return {
+    card: css.getPropertyValue('--card').trim(),
+    border: css.getPropertyValue('--border').trim(),
+    text: css.getPropertyValue('--text').trim(),
+    muted: css.getPropertyValue('--muted').trim()
+  };
+}
+
 function renderMarket() {
   const monthData = txData.monthly.find(m => m.month === curMonth);
   const prevData = txData.monthly[txData.monthly.indexOf(monthData) - 1];
   if (!monthData) return;
 
+  const palette = chartPalette();
   const cities = txData.cities;
-  const newVals = cities.map(c => (monthData.data[c]||{}).new || 0);
-  const secVals = cities.map(c => (monthData.data[c]||{}).second || 0);
-  const prcVals = cities.map(c => (monthData.data[c]||{}).second_avg_price || 0);
+  const txNote = document.getElementById('txNote');
+  txNote.style.display = txData.note ? 'block' : 'none';
+  txNote.textContent = txData.note || '';
+
+  const hasValue = v => typeof v === 'number' && Number.isFinite(v);
+  const fmtNum = v => hasValue(v) ? v.toLocaleString() : '--';
+  const newVals = cities.map(c => hasValue((monthData.data[c]||{}).new) ? monthData.data[c].new : null);
+  const secVals = cities.map(c => hasValue((monthData.data[c]||{}).second) ? monthData.data[c].second : null);
+  const prcVals = cities.map(c => hasValue((monthData.data[c]||{}).second_avg_price) ? monthData.data[c].second_avg_price : null);
 
   // Volume chart
   if (!chartVol) chartVol = echarts.init(document.getElementById('chartVolume'));
   chartVol.setOption({
     backgroundColor: 'transparent',
-    tooltip: { trigger: 'axis', backgroundColor: '#1a1d2e', borderColor: '#2a2d3e', textStyle: { color: '#e2e8f0', fontSize: 12 } },
-    legend: { data: ['新房', '二手房'], textStyle: { color: '#94a3b8' }, top: 0 },
+    tooltip: { trigger: 'axis', backgroundColor: palette.card, borderColor: palette.border, textStyle: { color: palette.text, fontSize: 12 } },
+    legend: { data: ['新房', '二手房'], textStyle: { color: palette.muted }, top: 0 },
     grid: { left: 60, right: 10, top: 30, bottom: 60 },
-    xAxis: { data: cities, axisLabel: { color: '#94a3b8', fontSize: 11, rotate: 45 }, axisLine: { lineStyle: { color: '#2a2d3e' } } },
-    yAxis: { axisLabel: { color: '#94a3b8', fontSize: 11 }, splitLine: { lineStyle: { color: '#2a2d3e' } } },
+    xAxis: { data: cities, axisLabel: { color: palette.muted, fontSize: 11, rotate: 45 }, axisLine: { lineStyle: { color: palette.border } } },
+    yAxis: { axisLabel: { color: palette.muted, fontSize: 11 }, splitLine: { lineStyle: { color: palette.border } } },
     series: [
       { name: '新房', type: 'bar', data: newVals, itemStyle: { color: '#6366f1', borderRadius: [3,3,0,0] }, barMaxWidth: 18 },
       { name: '二手房', type: 'bar', data: secVals, itemStyle: { color: '#22d3ee', borderRadius: [3,3,0,0] }, barMaxWidth: 18 }
@@ -432,10 +443,10 @@ function renderMarket() {
   if (!chartPrc) chartPrc = echarts.init(document.getElementById('chartPrice'));
   chartPrc.setOption({
     backgroundColor: 'transparent',
-    tooltip: { trigger: 'axis', backgroundColor: '#1a1d2e', borderColor: '#2a2d3e', textStyle: { color: '#e2e8f0', fontSize: 12 }, formatter: p => `${p[0].name}<br>${p[0].marker}均价：${p[0].value.toLocaleString()} 元/㎡` },
+    tooltip: { trigger: 'axis', backgroundColor: palette.card, borderColor: palette.border, textStyle: { color: palette.text, fontSize: 12 }, formatter: p => `${p[0].name}<br>${p[0].marker}均价：${hasValue(p[0].value) ? p[0].value.toLocaleString() + ' 元/㎡' : '待补充'}` },
     grid: { left: 70, right: 10, top: 20, bottom: 60 },
-    xAxis: { data: cities, axisLabel: { color: '#94a3b8', fontSize: 11, rotate: 45 }, axisLine: { lineStyle: { color: '#2a2d3e' } } },
-    yAxis: { axisLabel: { color: '#94a3b8', fontSize: 11, formatter: v => (v/10000).toFixed(0)+'万' }, splitLine: { lineStyle: { color: '#2a2d3e' } } },
+    xAxis: { data: cities, axisLabel: { color: palette.muted, fontSize: 11, rotate: 45 }, axisLine: { lineStyle: { color: palette.border } } },
+    yAxis: { axisLabel: { color: palette.muted, fontSize: 11, formatter: v => (v/10000).toFixed(0)+'万' }, splitLine: { lineStyle: { color: palette.border } } },
     series: [{ type: 'bar', data: prcVals, itemStyle: { color: (p) => prcVals[p.dataIndex] > 40000 ? '#f87171' : prcVals[p.dataIndex] > 20000 ? '#fb923c' : '#34d399', borderRadius: [3,3,0,0] }, barMaxWidth: 18 }]
   }, true);
 
@@ -444,18 +455,20 @@ function renderMarket() {
   tbody.innerHTML = cities.map(city => {
     const cur = monthData.data[city] || {};
     const prev = prevData ? (prevData.data[city] || {}) : {};
-    const newChg = prev.new ? (cur.new - prev.new) / prev.new * 100 : null;
-    const secChg = prev.second ? (cur.second - prev.second) / prev.second * 100 : null;
-    const prcChg = prev.second_avg_price ? (cur.second_avg_price - prev.second_avg_price) / prev.second_avg_price * 100 : null;
-    const fmt = (v, x) => v === null ? '--' : `<span class="${x > 0 ? 'up' : 'dn'}">${x > 0 ? '+' : ''}${x.toFixed(1)}%</span>`;
+    const newChg = hasValue(prev.new) && hasValue(cur.new) ? (cur.new - prev.new) / prev.new * 100 : null;
+    const secChg = hasValue(prev.second) && hasValue(cur.second) ? (cur.second - prev.second) / prev.second * 100 : null;
+    const prcChg = hasValue(prev.second_avg_price) && hasValue(cur.second_avg_price) ? (cur.second_avg_price - prev.second_avg_price) / prev.second_avg_price * 100 : null;
+    const fmt = x => x === null ? '--' : `<span class="${x > 0 ? 'up' : 'dn'}">${x > 0 ? '+' : ''}${x.toFixed(1)}%</span>`;
+    const source = cur.source_url ? `<a href="${cur.source_url}" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none">${cur.source || '来源'}</a>` : (cur.source || '--');
     return `<tr>
       <td><b>${city}</b></td>
-      <td class="num">${(cur.new||0).toLocaleString()}</td>
-      <td>${fmt(newChg, newChg)}</td>
-      <td class="num">${(cur.second||0).toLocaleString()}</td>
-      <td>${fmt(secChg, secChg)}</td>
-      <td class="num">${(cur.second_avg_price||0).toLocaleString()}</td>
-      <td>${fmt(prcChg, prcChg)}</td>
+      <td class="num">${fmtNum(cur.new)}</td>
+      <td>${fmt(newChg)}</td>
+      <td class="num">${fmtNum(cur.second)}</td>
+      <td>${fmt(secChg)}</td>
+      <td class="num">${fmtNum(cur.second_avg_price)}</td>
+      <td>${fmt(prcChg)}</td>
+      <td style="white-space:normal;min-width:220px;color:var(--muted);font-size:11px">${source}</td>
     </tr>`;
   }).join('');
 
@@ -466,99 +479,25 @@ function renderMarket() {
   const colors = ['#6366f1','#22d3ee','#f59e0b','#ef4444','#34d399','#a78bfa'];
   chartTrend.setOption({
     backgroundColor: 'transparent',
-    tooltip: { trigger: 'axis', backgroundColor: '#1a1d2e', borderColor: '#2a2d3e', textStyle: { color: '#e2e8f0', fontSize: 12 } },
-    legend: { data: topCities, textStyle: { color: '#94a3b8' }, top: 0 },
+    tooltip: { trigger: 'axis', backgroundColor: palette.card, borderColor: palette.border, textStyle: { color: palette.text, fontSize: 12 } },
+    legend: { data: topCities, textStyle: { color: palette.muted }, top: 0 },
     grid: { left: 60, right: 20, top: 36, bottom: 30 },
-    xAxis: { data: months, axisLabel: { color: '#94a3b8', fontSize: 11 }, axisLine: { lineStyle: { color: '#2a2d3e' } } },
-    yAxis: { axisLabel: { color: '#94a3b8', fontSize: 11 }, splitLine: { lineStyle: { color: '#2a2d3e' } } },
+    xAxis: { data: months, axisLabel: { color: palette.muted, fontSize: 11 }, axisLine: { lineStyle: { color: palette.border } } },
+    yAxis: { axisLabel: { color: palette.muted, fontSize: 11 }, splitLine: { lineStyle: { color: palette.border } } },
     series: topCities.map((city, i) => ({
       name: city, type: 'line', smooth: true,
-      data: txData.monthly.map(m => (m.data[city]||{}).new || 0),
+      data: txData.monthly.map(m => hasValue((m.data[city]||{}).new) ? m.data[city].new : null),
       itemStyle: { color: colors[i] }, lineStyle: { color: colors[i], width: 2 },
       symbolSize: 6, areaStyle: { color: colors[i], opacity: .05 }
     }))
   }, true);
 }
 
-// ── City Grid ──
-const TIERS = {
-  '北京':'一线','上海':'一线','广州':'一线','深圳':'一线',
-  '成都':'强二线','杭州':'强二线','重庆':'强二线','武汉':'强二线',
-  '西安':'强二线','南京':'强二线','苏州':'强二线','长沙':'强二线',
-  '郑州':'二线','天津':'二线','宁波':'二线','合肥':'二线','济南':'二线','青岛':'二线'
-};
-const TIER_COLORS = { '一线': '#6366f1', '强二线': '#22d3ee', '二线': '#94a3b8' };
-
-function buildCityGrid() {
-  const grid = document.getElementById('cityGrid');
-  const lastMonth = txData.monthly[txData.monthly.length - 1];
-  const prevMonth = txData.monthly[txData.monthly.length - 2];
-
-  grid.innerHTML = policiesData.cities.map(city => {
-    const policies = policiesData.policies.filter(p => p.city === city);
-    const high = policies.filter(p => p.impact === '重大利好').length;
-    const mid  = policies.filter(p => p.impact === '适度利好').length;
-    const low  = policies.filter(p => p.impact === '温和利好').length;
-    const tier = TIERS[city] || '二线';
-    const cur = lastMonth.data[city] || {};
-    const prev = prevMonth ? (prevMonth.data[city] || {}) : {};
-    const chg = prev.new ? ((cur.new - prev.new) / prev.new * 100).toFixed(1) : null;
-    const dots = [
-      ...Array(high).fill('<div class="dot-count dot-high" title="重大利好"></div>'),
-      ...Array(mid).fill('<div class="dot-count dot-mid" title="适度利好"></div>'),
-      ...Array(low).fill('<div class="dot-count dot-low" title="温和利好"></div>'),
-    ].slice(0, 8).join('');
-
-    return `<div class="city-card" onclick="showCityDetail('${city}')" id="cc-${city}">
-      <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="city-name">${city}</div>
-        <span style="font-size:10px;color:${TIER_COLORS[tier]||'#94a3b8'};font-weight:600">${tier}</span>
-      </div>
-      <div class="city-stats">
-        <div class="city-stat">
-          <div class="city-stat-val">${policies.length}</div>
-          <div class="city-stat-label">政策数</div>
-        </div>
-        <div class="city-stat">
-          <div class="city-stat-val" style="color:#ef4444">${high+mid+low}</div>
-          <div class="city-stat-label">利好</div>
-        </div>
-        <div class="city-stat">
-          <div class="city-stat-val">${chg !== null ? `<span class="${+chg>=0?'up':'dn'}">${+chg>=0?'+':''}${chg}%</span>` : '--'}</div>
-          <div class="city-stat-label">新房环比</div>
-        </div>
-      </div>
-      <div class="city-policy-count">${dots}</div>
-    </div>`;
-  }).join('');
-}
-
-function showCityDetail(city) {
-  document.querySelectorAll('.city-card').forEach(c => c.classList.remove('active'));
-  document.getElementById('cc-' + city).classList.add('active');
-
-  const policies = policiesData.policies.filter(p => p.city === city).sort((a,b) => b.date.localeCompare(a.date));
-  const detail = document.getElementById('cityDetail');
-  document.getElementById('cityDetailTitle').textContent = city + ' 政策历史（共' + policies.length + '条）';
-
-  const impactCls = { '重大利好': 'impact-high', '适度利好': 'impact-mid', '温和利好': 'impact-low', '中性': 'impact-neutral' };
-  const dotCls = { '重大利好': 'dot-high', '适度利好': 'dot-mid', '温和利好': 'dot-low', '中性': 'dot-neutral' };
-
-  document.getElementById('cityTimeline').innerHTML = policies.map(p => `
-    <div class="tl-item">
-      <div class="tl-left"><div class="tl-date">${p.date}</div></div>
-      <div class="tl-line"><div class="tl-dot ${dotCls[p.impact]||''}"></div></div>
-      <div class="tl-content">
-        <div class="tl-title">${p.url?`<a href="${p.url}" target="_blank" rel="noopener">${p.title}</a>`:p.title}<span class="impact-badge ${impactCls[p.impact]||''}">${p.impact}</span></div>
-        <div class="tl-summary">${p.url?`<a href="${p.url}" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:none" onmouseover="this.style.color='var(--primary)'" onmouseout="this.style.color='var(--muted)'">${p.summary}</a>`:p.summary}</div>
-        <div class="tl-tags">${(p.tags||[]).map(t=>`<span class="tl-tag">${t}</span>`).join('')}${p.source&&p.url?`<span class="tl-tag"><a href="${p.url}" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none">来源：${p.source} ↗</a></span>`:p.source?`<span class="tl-tag" style="color:var(--primary)">来源：${p.source}</span>`:''}</div>
-      </div>
-    </div>
-  `).join('');
-
-  detail.style.display = 'block';
-  detail.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (document.getElementById('page-market').classList.contains('active')) {
+    renderMarket();
+  }
+});
 
 loadData();
 </script>

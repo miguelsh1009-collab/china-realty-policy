@@ -1,75 +1,101 @@
 {
-  "updated": "2026-04-13",
+  "updated": "2026-04-23",
   "unit": "套",
+  "note": "成交套数来自公开新闻、协会或交易平台报道，城市之间可能存在网签、过户、新建商品住宅、二手住宅等口径差异；缺少可核实月度套数的城市保留为空值。",
   "cities": ["北京","上海","广州","深圳","成都","杭州","重庆","武汉","西安","南京","苏州","长沙","郑州","天津","宁波","合肥","济南","青岛"],
+  "sources": [
+    {
+      "name": "国家统计局 70城住宅销售价格指数",
+      "url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html",
+      "description": "用于核对2026年3月重点城市新建/二手住宅价格趋势。"
+    },
+    {
+      "name": "新京报：2026年3月上海楼市成交",
+      "url": "https://finance.sina.com.cn/jjxw/2026-03-25/doc-inhsffcv9693719.shtml",
+      "description": "用于上海2026年3月二手房成交突破3万套及新房周度成交热度背景。"
+    },
+    {
+      "name": "深圳房地产信息平台/深圳中原研究中心月报公开报道",
+      "url": "https://finance.sina.com.cn/stock/estate/integration/2026-04-01/doc-inhtpyxs1996798.shtml",
+      "description": "用于深圳2026年3月一手住宅及二手住宅成交套数。"
+    }
+  ],
   "monthly": [
-    {
-      "month": "2026-01",
-      "data": {
-        "北京": {"new": 8520, "second": 12300, "new_area": 95.2, "second_avg_price": 68500},
-        "上海": {"new": 9800, "second": 18600, "new_area": 102.5, "second_avg_price": 72000},
-        "广州": {"new": 7200, "second": 9800, "new_area": 98.3, "second_avg_price": 32000},
-        "深圳": {"new": 3100, "second": 7200, "new_area": 88.6, "second_avg_price": 68000},
-        "成都": {"new": 11200, "second": 14500, "new_area": 105.2, "second_avg_price": 18500},
-        "杭州": {"new": 6800, "second": 8900, "new_area": 99.8, "second_avg_price": 28000},
-        "重庆": {"new": 9500, "second": 8200, "new_area": 110.5, "second_avg_price": 13500},
-        "武汉": {"new": 7800, "second": 7600, "new_area": 108.2, "second_avg_price": 16800},
-        "西安": {"new": 8100, "second": 6500, "new_area": 106.8, "second_avg_price": 15200},
-        "南京": {"new": 5200, "second": 7800, "new_area": 101.3, "second_avg_price": 26500},
-        "苏州": {"new": 4800, "second": 6200, "new_area": 103.5, "second_avg_price": 22000},
-        "长沙": {"new": 8900, "second": 7100, "new_area": 109.2, "second_avg_price": 12800},
-        "郑州": {"new": 7200, "second": 5800, "new_area": 112.5, "second_avg_price": 12200},
-        "天津": {"new": 5600, "second": 9200, "new_area": 107.8, "second_avg_price": 18500},
-        "宁波": {"new": 4200, "second": 5600, "new_area": 104.2, "second_avg_price": 20800},
-        "合肥": {"new": 5800, "second": 6200, "new_area": 103.8, "second_avg_price": 17500},
-        "济南": {"new": 4500, "second": 5200, "new_area": 108.5, "second_avg_price": 14200},
-        "青岛": {"new": 5200, "second": 6800, "new_area": 106.2, "second_avg_price": 16500}
-      }
-    },
-    {
-      "month": "2026-02",
-      "data": {
-        "北京": {"new": 6200, "second": 10800, "new_area": 95.2, "second_avg_price": 68800},
-        "上海": {"new": 7200, "second": 15200, "new_area": 102.5, "second_avg_price": 72500},
-        "广州": {"new": 5800, "second": 8200, "new_area": 98.3, "second_avg_price": 32200},
-        "深圳": {"new": 2600, "second": 6100, "new_area": 88.6, "second_avg_price": 68200},
-        "成都": {"new": 8500, "second": 11200, "new_area": 105.2, "second_avg_price": 18800},
-        "杭州": {"new": 5200, "second": 7100, "new_area": 99.8, "second_avg_price": 28500},
-        "重庆": {"new": 7200, "second": 6800, "new_area": 110.5, "second_avg_price": 13800},
-        "武汉": {"new": 6100, "second": 6200, "new_area": 108.2, "second_avg_price": 17000},
-        "西安": {"new": 6200, "second": 5200, "new_area": 106.8, "second_avg_price": 15500},
-        "南京": {"new": 4100, "second": 6200, "new_area": 101.3, "second_avg_price": 26800},
-        "苏州": {"new": 3800, "second": 5100, "new_area": 103.5, "second_avg_price": 22300},
-        "长沙": {"new": 6800, "second": 5800, "new_area": 109.2, "second_avg_price": 13000},
-        "郑州": {"new": 5600, "second": 4800, "new_area": 112.5, "second_avg_price": 12500},
-        "天津": {"new": 4200, "second": 7500, "new_area": 107.8, "second_avg_price": 18800},
-        "宁波": {"new": 3200, "second": 4600, "new_area": 104.2, "second_avg_price": 21000},
-        "合肥": {"new": 4500, "second": 5100, "new_area": 103.8, "second_avg_price": 17800},
-        "济南": {"new": 3600, "second": 4200, "new_area": 108.5, "second_avg_price": 14500},
-        "青岛": {"new": 4100, "second": 5500, "new_area": 106.2, "second_avg_price": 16800}
-      }
-    },
     {
       "month": "2026-03",
       "data": {
-        "北京": {"new": 10200, "second": 16500, "new_area": 95.2, "second_avg_price": 69000},
-        "上海": {"new": 12800, "second": 22100, "new_area": 102.5, "second_avg_price": 73000},
-        "广州": {"new": 9500, "second": 13200, "new_area": 98.3, "second_avg_price": 32500},
-        "深圳": {"new": 4200, "second": 9800, "new_area": 88.6, "second_avg_price": 68800},
-        "成都": {"new": 14800, "second": 18900, "new_area": 105.2, "second_avg_price": 19200},
-        "杭州": {"new": 8900, "second": 11200, "new_area": 99.8, "second_avg_price": 29000},
-        "重庆": {"new": 12500, "second": 10800, "new_area": 110.5, "second_avg_price": 14000},
-        "武汉": {"new": 10200, "second": 9800, "new_area": 108.2, "second_avg_price": 17200},
-        "西安": {"new": 10800, "second": 8500, "new_area": 106.8, "second_avg_price": 15800},
-        "南京": {"new": 6800, "second": 9800, "new_area": 101.3, "second_avg_price": 27000},
-        "苏州": {"new": 6200, "second": 8100, "new_area": 103.5, "second_avg_price": 22500},
-        "长沙": {"new": 11500, "second": 9200, "new_area": 109.2, "second_avg_price": 13200},
-        "郑州": {"new": 9500, "second": 7600, "new_area": 112.5, "second_avg_price": 12800},
-        "天津": {"new": 7200, "second": 11800, "new_area": 107.8, "second_avg_price": 19000},
-        "宁波": {"new": 5600, "second": 7200, "new_area": 104.2, "second_avg_price": 21200},
-        "合肥": {"new": 7500, "second": 8000, "new_area": 103.8, "second_avg_price": 18000},
-        "济南": {"new": 5800, "second": 6800, "new_area": 108.5, "second_avg_price": 14800},
-        "青岛": {"new": 6800, "second": 8600, "new_area": 106.2, "second_avg_price": 17000}
+        "北京": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "price_index_new_yoy": -3.7,
+          "price_index_second_yoy": -6.6,
+          "source": "国家统计局70城价格指数；成交套数待补充官方月度网签来源",
+          "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
+        },
+        "上海": {
+          "new": null,
+          "second": 30000,
+          "new_area": null,
+          "second_avg_price": null,
+          "price_index_new_yoy": 0.0,
+          "price_index_second_yoy": -5.4,
+          "source": "新京报公开报道称3月二手房成交突破3万套",
+          "source_url": "https://finance.sina.com.cn/jjxw/2026-03-25/doc-inhsffcv9693719.shtml"
+        },
+        "广州": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "price_index_new_yoy": -7.9,
+          "price_index_second_yoy": -8.3,
+          "source": "国家统计局70城价格指数；成交套数待补充官方月度网签来源",
+          "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
+        },
+        "深圳": {
+          "new": 3771,
+          "second": 5689,
+          "new_area": null,
+          "second_avg_price": null,
+          "price_index_new_yoy": -4.6,
+          "price_index_second_yoy": -5.6,
+          "source": "深圳房地产信息平台/深圳中原研究中心月报公开报道",
+          "source_url": "https://finance.sina.com.cn/stock/estate/integration/2026-04-01/doc-inhtpyxs1996798.shtml"
+        },
+        "成都": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "price_index_new_yoy": -3.6,
+          "price_index_second_yoy": -4.1,
+          "source": "国家统计局70城价格指数；成交套数待补充官方月度网签来源",
+          "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
+        },
+        "杭州": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "price_index_new_yoy": -2.1,
+          "price_index_second_yoy": -5.7,
+          "source": "国家统计局70城价格指数；成交套数待补充官方月度网签来源",
+          "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
+        },
+        "重庆": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "武汉": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "西安": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "南京": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "苏州": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "长沙": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "郑州": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "天津": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "宁波": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "合肥": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "济南": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "青岛": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""}
       }
     }
   ]
