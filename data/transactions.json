@@ -18,6 +18,36 @@
       "name": "深圳房地产信息平台/深圳中原研究中心月报公开报道",
       "url": "https://finance.sina.com.cn/stock/estate/integration/2026-04-01/doc-inhtpyxs1996798.shtml",
       "description": "用于深圳2026年3月一手住宅及二手住宅成交套数。"
+    },
+    {
+      "name": "北京商报：北京2026年3月二手房网签",
+      "url": "https://www.chinanews.com.cn/cj/2026/04-02/10597206.shtml",
+      "description": "用于北京2026年3月二手房网签套数。"
+    },
+    {
+      "name": "中国新闻网：广州二手住宅交易月报",
+      "url": "https://www.chinanews.com.cn/cj/2026/04-01/10596883.shtml",
+      "description": "用于广州2026年3月二手住宅网签套数。"
+    },
+    {
+      "name": "武汉市住房和城市更新局：2026年3月成交统计",
+      "url": "https://zgj.wuhan.gov.cn/xxgk/xxgkml/sjfb/spzfxysydjcjb/202604/t20260403_2749369.shtml",
+      "description": "用于武汉2026年3月新建商品住房成交套数。"
+    },
+    {
+      "name": "界面新闻：西安2026年3月二手住宅网签",
+      "url": "https://m.jiemian.com/article/14220278.html",
+      "description": "用于西安2026年3月二手住宅网签备案套数。"
+    },
+    {
+      "name": "湖南日报：长沙楼市小阳春",
+      "url": "https://www.hunantoday.cn/news/xhn/202603/31825800.html",
+      "description": "用于长沙2026年3月二手房预计成交套数。"
+    },
+    {
+      "name": "大众新闻·半岛新闻：青岛2026年3月楼市成交",
+      "url": "https://m.dzplus.dzng.com/share/general/0/NEWS3271903VKFYLKZZERBDZ",
+      "description": "用于青岛2026年3月新房和二手房成交套数。"
     }
   ],
   "monthly": [
@@ -26,13 +56,13 @@
       "data": {
         "北京": {
           "new": null,
-          "second": null,
+          "second": 19886,
           "new_area": null,
           "second_avg_price": null,
           "price_index_new_yoy": -3.7,
           "price_index_second_yoy": -6.6,
-          "source": "国家统计局70城价格指数；成交套数待补充官方月度网签来源",
-          "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
+          "source": "北京商报根据北京市住建委网签数据统计：3月北京二手房网签19886套",
+          "source_url": "https://www.chinanews.com.cn/cj/2026/04-02/10597206.shtml"
         },
         "上海": {
           "new": null,
@@ -46,13 +76,13 @@
         },
         "广州": {
           "new": null,
-          "second": null,
+          "second": 10785,
           "new_area": null,
           "second_avg_price": null,
           "price_index_new_yoy": -7.9,
           "price_index_second_yoy": -8.3,
-          "source": "国家统计局70城价格指数；成交套数待补充官方月度网签来源",
-          "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
+          "source": "广州市房地产中介协会月报：3月二手住宅网签10785套",
+          "source_url": "https://www.chinanews.com.cn/cj/2026/04-01/10596883.shtml"
         },
         "深圳": {
           "new": 3771,
@@ -85,17 +115,45 @@
           "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
         },
         "重庆": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
-        "武汉": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
-        "西安": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "武汉": {
+          "new": 12190,
+          "second": null,
+          "new_area": 148.81,
+          "second_avg_price": null,
+          "source": "武汉市住房和城市更新局：3月新建商品住房成交12190套",
+          "source_url": "https://zgj.wuhan.gov.cn/xxgk/xxgkml/sjfb/spzfxysydjcjb/202604/t20260403_2749369.shtml"
+        },
+        "西安": {
+          "new": null,
+          "second": 11288,
+          "new_area": null,
+          "second_avg_price": null,
+          "source": "西安市住建局二手房网签情况公开报道：3月二手住宅网签备案11288套",
+          "source_url": "https://m.jiemian.com/article/14220278.html"
+        },
         "南京": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
         "苏州": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
-        "长沙": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
+        "长沙": {
+          "new": null,
+          "second": 4500,
+          "new_area": null,
+          "second_avg_price": null,
+          "source": "湖南日报报道：3月长沙二手房预计全月成交约4500套",
+          "source_url": "https://www.hunantoday.cn/news/xhn/202603/31825800.html"
+        },
         "郑州": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
         "天津": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
         "宁波": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
         "合肥": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
         "济南": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""},
-        "青岛": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "source": "待补充可核实成交来源", "source_url": ""}
+        "青岛": {
+          "new": 6050,
+          "second": 6335,
+          "new_area": 82.86,
+          "second_avg_price": null,
+          "source": "大众新闻·半岛新闻：3月青岛新房成交6050套，贝壳研究院数据二手房成交6335套",
+          "source_url": "https://m.dzplus.dzng.com/share/general/0/NEWS3271903VKFYLKZZERBDZ"
+        }
       }
     }
   ]
