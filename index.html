@@ -459,7 +459,15 @@ function renderMarket() {
     const secChg = hasValue(prev.second) && hasValue(cur.second) ? (cur.second - prev.second) / prev.second * 100 : null;
     const prcChg = hasValue(prev.second_avg_price) && hasValue(cur.second_avg_price) ? (cur.second_avg_price - prev.second_avg_price) / prev.second_avg_price * 100 : null;
     const fmt = x => x === null ? '--' : `<span class="${x > 0 ? 'up' : 'dn'}">${x > 0 ? '+' : ''}${x.toFixed(1)}%</span>`;
+    const confidenceLabels = { high: '高', medium: '中', low: '低' };
     const source = cur.source_url ? `<a href="${cur.source_url}" target="_blank" rel="noopener" style="color:var(--primary);text-decoration:none">${cur.source || '来源'}</a>` : (cur.source || '--');
+    const conflicts = (cur.conflicts || []).map(item => `<div style="margin-top:4px;color:var(--loose)">冲突：${item.source || '未知来源'} ${item.value || ''} ${item.note || ''}</div>`).join('');
+    const sourceDetail = `
+      <div>${source}</div>
+      <div style="margin-top:4px">口径：${cur.metric_scope || '待补充'}</div>
+      <div style="margin-top:4px">截至：${cur.as_of_date || curMonth} · 可信度：${confidenceLabels[cur.confidence] || '待核'}</div>
+      ${conflicts}
+    `;
     return `<tr>
       <td><b>${city}</b></td>
       <td class="num">${fmtNum(cur.new)}</td>
@@ -468,7 +476,7 @@ function renderMarket() {
       <td>${fmt(secChg)}</td>
       <td class="num">${fmtNum(cur.second_avg_price)}</td>
       <td>${fmt(prcChg)}</td>
-      <td style="white-space:normal;min-width:220px;color:var(--muted);font-size:11px">${source}</td>
+      <td style="white-space:normal;min-width:260px;color:var(--muted);font-size:11px;line-height:1.45">${sourceDetail}</td>
     </tr>`;
   }).join('');
 
