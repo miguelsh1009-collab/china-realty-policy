@@ -174,12 +174,14 @@ def main():
 
     if new_dedup:
         data['policies'] = new_dedup + existing
-        data['updated'] = TODAY
-        with open(DATA_FILE, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        print(f'写入完成，总计 {len(data["policies"])} 条')
+        print(f'新增政策 {len(new_dedup)} 条')
     else:
-        print('无新政策，跳过写入')
+        print('无新政策，仅刷新更新时间')
+
+    data['updated'] = TODAY
+    with open(DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+    print(f'写入完成，总计 {len(data["policies"])} 条，更新时间 {TODAY}')
 
 
 if __name__ == '__main__':
