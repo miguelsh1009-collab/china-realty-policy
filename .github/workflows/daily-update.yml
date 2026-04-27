@@ -20,11 +20,14 @@ jobs:
         run: pip install requests beautifulsoup4 lxml
       - name: Run policy scraper
         run: python scripts/scrape_policies.py
+      - name: Run transaction scraper
+        run: python scripts/scrape_transactions.py
+        timeout-minutes: 5
       - name: Commit and push if changed
         run: |
           git config user.name "policy-bot"
           git config user.email "bot@github-actions"
-          git add data/policies.json
+          git add data/policies.json data/transactions.json
           if git diff --cached --quiet; then
             echo "No changes"
           else

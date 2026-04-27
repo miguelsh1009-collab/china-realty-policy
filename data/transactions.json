@@ -1,9 +1,28 @@
 {
-  "updated": "2026-04-23",
+  "updated": "2026-04-27",
   "unit": "套",
   "note": "成交套数来自公开新闻、协会或交易平台报道，城市之间可能存在网签、过户、新建商品住宅、二手住宅等口径差异；缺少可核实月度套数的城市保留为空值。",
   "methodology": "字段说明：metric_scope 记录当前数值口径，as_of_date 记录统计截至日期，confidence 分为 high/medium/low；如同口径来源冲突，主值采用更接近官方或原始发布方的数据，并在 conflicts 中保留差异来源。",
-  "cities": ["北京","上海","广州","深圳","成都","杭州","重庆","武汉","西安","南京","苏州","长沙","郑州","天津","宁波","合肥","济南","青岛"],
+  "cities": [
+    "北京",
+    "上海",
+    "广州",
+    "深圳",
+    "成都",
+    "杭州",
+    "重庆",
+    "武汉",
+    "西安",
+    "南京",
+    "苏州",
+    "长沙",
+    "郑州",
+    "天津",
+    "宁波",
+    "合肥",
+    "济南",
+    "青岛"
+  ],
   "sources": [
     {
       "name": "国家统计局 70城住宅销售价格指数",
@@ -100,35 +119,195 @@
     {
       "month": "2025-11",
       "data": {
-        "北京": {"new": null, "second": 14446, "new_area": null, "second_avg_price": null, "metric_scope": "二手房网签；新房成交待补充", "as_of_date": "2025-11-30", "confidence": "high", "conflicts": [], "source": "北京商报/中新网：2025年11月北京二手房网签14446套", "source_url": "https://www.chinanews.com/cj/2026/02-02/10563507.shtml"},
-        "上海": {"new": null, "second": 22943, "new_area": null, "second_avg_price": null, "metric_scope": "二手房网签成交；新房成交待补充", "as_of_date": "2025-11-30", "confidence": "high", "conflicts": [], "source": "上海市房地产交易中心公开报道：2025年11月上海二手房网签成交22943套", "source_url": "https://finance.sina.com.cn/roll/2025-12-03/doc-infznqym1916756.shtml?froms=ggmp"},
-        "深圳": {"new": 2644, "second": 4472, "new_area": null, "second_avg_price": null, "metric_scope": "一手住宅网签、二手住宅网签", "as_of_date": "2025-11-30", "confidence": "medium", "conflicts": [{"source": "深圳市房地产中介协会录得量", "value": "5762套", "note": "二手房录得量，不同于二手住宅网签口径"}], "source": "深圳中原/乐有家公开报道：11月一手住宅网签2644套，二手住宅网签4472套", "source_url": "https://finance.sina.com.cn/jjxw/2025-12-01/doc-infzhiak3229793.shtml?froms=ggmp"}
+        "北京": {
+          "new": null,
+          "second": 14446,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手房网签；新房成交待补充",
+          "as_of_date": "2025-11-30",
+          "confidence": "high",
+          "conflicts": [],
+          "source": "北京商报/中新网：2025年11月北京二手房网签14446套",
+          "source_url": "https://www.chinanews.com/cj/2026/02-02/10563507.shtml"
+        },
+        "上海": {
+          "new": null,
+          "second": 22943,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手房网签成交；新房成交待补充",
+          "as_of_date": "2025-11-30",
+          "confidence": "high",
+          "conflicts": [],
+          "source": "上海市房地产交易中心公开报道：2025年11月上海二手房网签成交22943套",
+          "source_url": "https://finance.sina.com.cn/roll/2025-12-03/doc-infznqym1916756.shtml?froms=ggmp"
+        },
+        "深圳": {
+          "new": 2644,
+          "second": 4472,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "一手住宅网签、二手住宅网签",
+          "as_of_date": "2025-11-30",
+          "confidence": "medium",
+          "conflicts": [
+            {
+              "source": "深圳市房地产中介协会录得量",
+              "value": "5762套",
+              "note": "二手房录得量，不同于二手住宅网签口径"
+            }
+          ],
+          "source": "深圳中原/乐有家公开报道：11月一手住宅网签2644套，二手住宅网签4472套",
+          "source_url": "https://finance.sina.com.cn/jjxw/2025-12-01/doc-infzhiak3229793.shtml?froms=ggmp"
+        }
       }
     },
     {
       "month": "2025-12",
       "data": {
-        "北京": {"new": null, "second": 17200, "new_area": null, "second_avg_price": null, "metric_scope": "二手住宅网签；新房成交待补充", "as_of_date": "2025-12-31", "confidence": "high", "conflicts": [], "source": "北京商报/中新网：2025年12月北京二手房网签17200套", "source_url": "https://www.chinanews.com/cj/2026/02-02/10563507.shtml"},
-        "上海": {"new": 19544, "second": 22961, "new_area": null, "second_avg_price": null, "metric_scope": "新房、二手房成交；含住宅、办公、商业等", "as_of_date": "2025-12-31", "confidence": "medium", "conflicts": [], "source": "上海网上房地产成交日历公开报道：12月新房19544套，二手房22961套", "source_url": "https://www.sohu.com/a/971493821_353578"},
-        "深圳": {"new": null, "second": 4937, "new_area": null, "second_avg_price": null, "metric_scope": "二手住宅成交；一手住宅成交待补充", "as_of_date": "2025-12-31", "confidence": "medium", "conflicts": [], "source": "中指云深圳二手房市场监测月报：2025年12月二手住宅成交4937套", "source_url": "https://www.cih-index.com/report/detail/114648.html"}
+        "北京": {
+          "new": null,
+          "second": 17200,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手住宅网签；新房成交待补充",
+          "as_of_date": "2025-12-31",
+          "confidence": "high",
+          "conflicts": [],
+          "source": "北京商报/中新网：2025年12月北京二手房网签17200套",
+          "source_url": "https://www.chinanews.com/cj/2026/02-02/10563507.shtml"
+        },
+        "上海": {
+          "new": 19544,
+          "second": 22961,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "新房、二手房成交；含住宅、办公、商业等",
+          "as_of_date": "2025-12-31",
+          "confidence": "medium",
+          "conflicts": [],
+          "source": "上海网上房地产成交日历公开报道：12月新房19544套，二手房22961套",
+          "source_url": "https://www.sohu.com/a/971493821_353578"
+        },
+        "深圳": {
+          "new": null,
+          "second": 4937,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手住宅成交；一手住宅成交待补充",
+          "as_of_date": "2025-12-31",
+          "confidence": "medium",
+          "conflicts": [],
+          "source": "中指云深圳二手房市场监测月报：2025年12月二手住宅成交4937套",
+          "source_url": "https://www.cih-index.com/report/detail/114648.html"
+        }
       }
     },
     {
       "month": "2026-01",
       "data": {
-        "北京": {"new": null, "second": 15082, "new_area": null, "second_avg_price": null, "metric_scope": "二手房网签；新房成交待补充", "as_of_date": "2026-01-31", "confidence": "high", "conflicts": [], "source": "北京商报/中新网：2026年1月北京二手房网签15082套", "source_url": "https://www.chinanews.com/cj/2026/02-02/10563507.shtml"},
-        "上海": {"new": null, "second": 22834, "new_area": null, "second_avg_price": null, "metric_scope": "二手房成交；新房成交待补充", "as_of_date": "2026-01-31", "confidence": "high", "conflicts": [], "source": "信义房屋：2026年1月上海二手房成交22834套", "source_url": "https://www.sinyi.com.cn/news/detail?id=1073"},
-        "深圳": {"new": 2582, "second": 5281, "new_area": null, "second_avg_price": null, "metric_scope": "一手住宅备案、二手住宅备案", "as_of_date": "2026-01-31", "confidence": "medium", "conflicts": [], "source": "香港文汇网/美联物业全国研究中心：1月深圳一手住宅备案2582套，二手住宅备案5281套", "source_url": "https://www.wenweipo.com/s/202602/13/AP698ef777e4b04d7d56d36513.html"},
-        "广州": {"new": null, "second": 2434, "new_area": null, "second_avg_price": null, "metric_scope": "二手住宅成交；由1-2月累计7701套减2月5267套推算", "as_of_date": "2026-01-31", "confidence": "low", "conflicts": [], "source": "中指研究院：广州2月成交5267套、1-2月累计7701套，推算1月2434套", "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"},
-        "杭州": {"new": null, "second": 5437, "new_area": null, "second_avg_price": null, "metric_scope": "二手住宅成交；由1-2月累计7701套减2月2264套推算", "as_of_date": "2026-01-31", "confidence": "low", "conflicts": [], "source": "中指研究院：杭州2月成交2264套、1-2月累计7701套，推算1月5437套", "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"}
+        "北京": {
+          "new": null,
+          "second": 15082,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手房网签；新房成交待补充",
+          "as_of_date": "2026-01-31",
+          "confidence": "high",
+          "conflicts": [],
+          "source": "北京商报/中新网：2026年1月北京二手房网签15082套",
+          "source_url": "https://www.chinanews.com/cj/2026/02-02/10563507.shtml"
+        },
+        "上海": {
+          "new": null,
+          "second": 22834,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手房成交；新房成交待补充",
+          "as_of_date": "2026-01-31",
+          "confidence": "high",
+          "conflicts": [],
+          "source": "信义房屋：2026年1月上海二手房成交22834套",
+          "source_url": "https://www.sinyi.com.cn/news/detail?id=1073"
+        },
+        "深圳": {
+          "new": 2582,
+          "second": 5281,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "一手住宅备案、二手住宅备案",
+          "as_of_date": "2026-01-31",
+          "confidence": "medium",
+          "conflicts": [],
+          "source": "香港文汇网/美联物业全国研究中心：1月深圳一手住宅备案2582套，二手住宅备案5281套",
+          "source_url": "https://www.wenweipo.com/s/202602/13/AP698ef777e4b04d7d56d36513.html"
+        },
+        "广州": {
+          "new": null,
+          "second": 2434,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手住宅成交；由1-2月累计7701套减2月5267套推算",
+          "as_of_date": "2026-01-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "中指研究院：广州2月成交5267套、1-2月累计7701套，推算1月2434套",
+          "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"
+        },
+        "杭州": {
+          "new": null,
+          "second": 5437,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手住宅成交；由1-2月累计7701套减2月2264套推算",
+          "as_of_date": "2026-01-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "中指研究院：杭州2月成交2264套、1-2月累计7701套，推算1月5437套",
+          "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"
+        }
       }
     },
     {
       "month": "2026-02",
       "data": {
-        "广州": {"new": null, "second": 5267, "new_area": null, "second_avg_price": null, "metric_scope": "二手住宅成交；新房成交待补充", "as_of_date": "2026-02-28", "confidence": "medium", "conflicts": [], "source": "中指研究院：2026年2月广州二手住宅成交5267套", "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"},
-        "深圳": {"new": 1297, "second": 2339, "new_area": null, "second_avg_price": null, "metric_scope": "一手住宅网签、二手住宅网签", "as_of_date": "2026-02-28", "confidence": "medium", "conflicts": [], "source": "乐有家研究中心：2026年2月深圳一手住宅网签1297套，二手住宅网签2339套", "source_url": "https://k.sina.cn/article_7857201856_1d45362c001903meki.html?from=estate"},
-        "杭州": {"new": null, "second": 2264, "new_area": null, "second_avg_price": null, "metric_scope": "二手住宅成交；新房成交待补充", "as_of_date": "2026-02-28", "confidence": "medium", "conflicts": [], "source": "中指研究院：2026年2月杭州二手住宅成交2264套", "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"}
+        "广州": {
+          "new": null,
+          "second": 5267,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手住宅成交；新房成交待补充",
+          "as_of_date": "2026-02-28",
+          "confidence": "medium",
+          "conflicts": [],
+          "source": "中指研究院：2026年2月广州二手住宅成交5267套",
+          "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"
+        },
+        "深圳": {
+          "new": 1297,
+          "second": 2339,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "一手住宅网签、二手住宅网签",
+          "as_of_date": "2026-02-28",
+          "confidence": "medium",
+          "conflicts": [],
+          "source": "乐有家研究中心：2026年2月深圳一手住宅网签1297套，二手住宅网签2339套",
+          "source_url": "https://k.sina.cn/article_7857201856_1d45362c001903meki.html?from=estate"
+        },
+        "杭州": {
+          "new": null,
+          "second": 2264,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "二手住宅成交；新房成交待补充",
+          "as_of_date": "2026-02-28",
+          "confidence": "medium",
+          "conflicts": [],
+          "source": "中指研究院：2026年2月杭州二手住宅成交2264套",
+          "source_url": "https://www.cih-index.com/news/2026-03-18/54460636.html"
+        }
       }
     },
     {
@@ -218,7 +397,18 @@
           "source": "国家统计局70城价格指数；成交套数待补充官方月度网签来源",
           "source_url": "https://www.stats.gov.cn/sj/zxfbhjd/202604/t20260416_1963320.html"
         },
-        "重庆": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
+        "重庆": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
         "武汉": {
           "new": 12190,
           "second": null,
@@ -243,8 +433,30 @@
           "source": "西安市住建局二手房网签情况公开报道：3月二手住宅网签备案11288套",
           "source_url": "https://m.jiemian.com/article/14220278.html"
         },
-        "南京": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
-        "苏州": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
+        "南京": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
+        "苏州": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
         "长沙": {
           "new": null,
           "second": 4500,
@@ -257,11 +469,66 @@
           "source": "湖南日报报道：3月长沙二手房预计全月成交约4500套",
           "source_url": "https://www.hunantoday.cn/news/xhn/202603/31825800.html"
         },
-        "郑州": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
-        "天津": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
-        "宁波": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
-        "合肥": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
-        "济南": {"new": null, "second": null, "new_area": null, "second_avg_price": null, "metric_scope": "成交套数待补充", "as_of_date": "2026-03-31", "confidence": "low", "conflicts": [], "source": "待补充可核实成交来源", "source_url": ""},
+        "郑州": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
+        "天津": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
+        "宁波": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
+        "合肥": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
+        "济南": {
+          "new": null,
+          "second": null,
+          "new_area": null,
+          "second_avg_price": null,
+          "metric_scope": "成交套数待补充",
+          "as_of_date": "2026-03-31",
+          "confidence": "low",
+          "conflicts": [],
+          "source": "待补充可核实成交来源",
+          "source_url": ""
+        },
         "青岛": {
           "new": 6050,
           "second": 6335,
