@@ -251,6 +251,28 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
     <div class="chart-title" style="margin-bottom:10px">月度成交趋势（主要城市，优先二手房口径）</div>
     <div style="height:320px" id="chartTrend"></div>
   </div>
+
+  <!-- 上海新房成交（房天下） -->
+  <div class="section" id="shFangSection">
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+      <span class="section-title" style="margin:0">上海新房成交备案（房天下）</span>
+      <span style="margin-left:auto; font-size:11px; color:var(--muted)" id="shFangUpdated"></span>
+    </div>
+    <div class="notice" id="shFangNote" style="display:none"></div>
+    <div class="chart-row">
+      <div class="chart-box">
+        <div class="chart-title">月度成交套数</div>
+        <div class="chart-area" id="chartShFangTotal"></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">本月各区成交套数</div>
+        <div class="chart-area" id="chartShFangDistrict"></div>
+      </div>
+    </div>
+    <div style="margin-top:8px; font-size:11px; color:var(--muted)">
+      来源：<a href="https://sh.newhouse.fang.com/xfbusiness/deal.htm" target="_blank" rel="noopener" style="color:var(--primary)">房天下上海新房成交备案</a>，楼盘去重后汇总，数据口径可能与官方网签备案存在差异。
+    </div>
+  </div>
 </div>
 
 </div><!-- /container -->
@@ -258,19 +280,23 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, 'P
 <script>
 let policiesData = null;
 let txData = null;
+let shFangData = null;
 let filters = { city: '', type: '', impact: '' };
 let curMonth = null;
 let chartVol=null, chartPrc=null, chartTrend=null;
+let chartShFangTotal=null, chartShFangDistrict=null;
 
 // ── Data load ──
 async function loadData() {
   try {
-    const [pRes, tRes] = await Promise.all([
+    const [pRes, tRes, sfRes] = await Promise.all([
       fetch('./data/policies.json?t=' + Date.now()),
-      fetch('./data/transactions.json?t=' + Date.now())
+      fetch('./data/transactions.json?t=' + Date.now()),
+      fetch('./data/shanghai_fang.json?t=' + Date.now())
     ]);
     policiesData = await pRes.json();
     txData = await tRes.json();
+    shFangData = await sfRes.json();
 
     document.getElementById('updatedText').textContent = '数据更新：' + policiesData.updated;
     buildCityFilter();
@@ -503,6 +529,88 @@ function renderMarket() {
       itemStyle: { color: colors[i] }, lineStyle: { color: colors[i], width: 2 },
       symbolSize: 6, areaStyle: { color: colors[i], opacity: .05 }
     }))
+  }, true);
+
+  renderShFang();
+}
+
+// ── Shanghai Fang chart ──
+function renderShFang() {
+  const section = document.getElementById('shFangSection');
+  if (!shFangData) { section.style.display = 'none'; return; }
+
+  const monthly = (shFangData.monthly || []).slice().sort((a,b) => a.month.localeCompare(b.month));
+  if (!monthly.length) {
+    // 数据文件存在但还没有月份数据，显示提示
+    document.getElementById('shFangNote').textContent = '暂无数据，请先运行 scripts/scrape_fang_sh.py 抓取。';
+    document.getElementById('shFangNote').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('shFangNote').style.display = 'none';
+  document.getElementById('shFangUpdated').textContent = '更新于 ' + (shFangData.updated || '');
+
+  const palette = chartPalette();
+  const months = monthly.map(m => m.month);
+  const totals = monthly.map(m => m.total || 0);
+
+  // 月度总量折线图
+  if (!chartShFangTotal) chartShFangTotal = echarts.init(document.getElementById('chartShFangTotal'));
+  chartShFangTotal.setOption({
+    backgroundColor: 'transparent',
+    tooltip: {
+      trigger: 'axis',
+      backgroundColor: palette.card, borderColor: palette.border,
+      textStyle: { color: palette.text, fontSize: 12 },
+      formatter: p => `${p[0].name}<br>${p[0].marker}成交 ${p[0].value ? p[0].value.toLocaleString() : '--'} 套`
+    },
+    grid: { left: 60, right: 16, top: 20, bottom: 40 },
+    xAxis: {
+      data: months,
+      axisLabel: { color: palette.muted, fontSize: 11, rotate: 30 },
+      axisLine: { lineStyle: { color: palette.border } }
+    },
+    yAxis: {
+      axisLabel: { color: palette.muted, fontSize: 11 },
+      splitLine: { lineStyle: { color: palette.border } }
+    },
+    series: [{
+      type: 'bar',
+      data: totals,
+      itemStyle: { color: '#6366f1', borderRadius: [3,3,0,0] },
+      barMaxWidth: 28,
+      label: { show: true, position: 'top', fontSize: 10, color: palette.muted,
+               formatter: p => p.value ? p.value.toLocaleString() : '' }
+    }]
+  }, true);
+
+  // 最新月各区饼图
+  const latest = monthly[monthly.length - 1];
+  const districts = Object.entries(latest.by_district || {}).sort((a,b) => b[1]-a[1]);
+  const pieColors = ['#6366f1','#22d3ee','#f59e0b','#ef4444','#34d399','#a78bfa','#fb923c','#38bdf8','#4ade80','#f472b6'];
+
+  if (!chartShFangDistrict) chartShFangDistrict = echarts.init(document.getElementById('chartShFangDistrict'));
+  chartShFangDistrict.setOption({
+    backgroundColor: 'transparent',
+    title: { text: latest.month, left: 'center', top: 0, textStyle: { color: palette.muted, fontSize: 11, fontWeight: 'normal' } },
+    tooltip: {
+      trigger: 'item',
+      backgroundColor: palette.card, borderColor: palette.border,
+      textStyle: { color: palette.text, fontSize: 12 },
+      formatter: p => `${p.name}<br>${p.marker}${p.value.toLocaleString()} 套（${p.percent}%）`
+    },
+    legend: { show: false },
+    series: [{
+      type: 'pie',
+      radius: ['35%', '65%'],
+      center: ['50%', '55%'],
+      data: districts.map(([name, value], i) => ({
+        name, value,
+        itemStyle: { color: pieColors[i % pieColors.length] }
+      })),
+      label: { fontSize: 10, color: palette.text },
+      labelLine: { lineStyle: { color: palette.border } }
+    }]
   }, true);
 }
 
