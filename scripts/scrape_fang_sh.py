@@ -15,21 +15,21 @@
 
 import asyncio
 import json
+import math
+import re
 import sys
-from datetime import date, datetime
+from datetime import date
 from pathlib import Path
+from typing import Optional
 
 from playwright.async_api import async_playwright
 
 DATA_FILE = Path(__file__).parent.parent / "data" / "shanghai_fang.json"
 URL = "https://sh.newhouse.fang.com/xfbusiness/deal.htm"
-CHROME_PROFILE = Path.home() / "Library/Application Support/Google/Chrome"
-
-# 要抓取的月份数（从当前月往前）
-DEFAULT_MONTHS = 12
+PAGE_SIZE = 10  # fang.com 每页条数
 
 
-def month_list(n: int) -> list[str]:
+def month_list(n: int) -> list:
     """返回最近 n 个月的字符串列表，如 ['2026-05', '2026-04', ...]"""
     today = date.today()
     result = []
@@ -45,29 +45,45 @@ def month_list(n: int) -> list[str]:
 
 async def select_month(page, target_month: str) -> bool:
     """
-    打开月份下拉，点击目标月份 li，等待数据刷新。
-    返回 True 表示成功切换。
+    1. 通过 mousedown/mouseup/click 事件点击对应月份 li，将 #monthSelect input 值设为目标月份
+    2. 点击 #searchBtn 查询按钮触发数据刷新
+    返回 True 表示操作成功（input 值已更新）。
     """
-    # 1. 点击下拉按钮打开
-    await page.click("#monthSelect", timeout=8000)
-    await page.wait_for_timeout(600)
+    # Step 1: 触发 li 上的鼠标事件，让 JS 把 input 值设为目标月份
+    clicked = await page.evaluate(
+        """(month) => {
+            const lis = document.querySelectorAll('.selectUl li');
+            for (const li of lis) {
+                const p = li.querySelector('p');
+                if (p && p.textContent.trim() === month) {
+                    ['mousedown', 'mouseup', 'click'].forEach(evt =>
+                        li.dispatchEvent(new MouseEvent(evt, {bubbles: true, cancelable: true})));
+                    return true;
+                }
+            }
+            return false;
+        }""",
+        target_month,
+    )
 
-    # 2. 找到包含目标月份文字的 li（精确文本匹配）
-    li_loc = page.locator(".selectUl li").filter(has_text=target_month)
-    count = await li_loc.count()
-    if count == 0:
+    if not clicked:
         print(f"  [!] 找不到月份选项: {target_month}")
-        # 关闭下拉（按 Escape）
-        await page.keyboard.press("Escape")
         return False
 
-    # 3. 点击 li（不是内部的 p），触发月份切换
-    await li_loc.first.click()
-    await page.wait_for_timeout(800)
+    await page.wait_for_timeout(400)
 
-    # 4. 等待网络稳定（数据刷新）
+    # 确认 input 值已更新
+    input_val = await page.locator("#monthSelect").input_value()
+    if target_month not in input_val:
+        print(f"  [!] input 值未变 ({input_val!r})，跳过")
+        return False
+
+    # Step 2: 点击查询按钮触发数据加载
+    await page.click("#searchBtn", timeout=5000)
+    await page.wait_for_timeout(1500)
+
     try:
-        await page.wait_for_load_state("networkidle", timeout=8000)
+        await page.wait_for_load_state("networkidle", timeout=10000)
     except Exception:
         pass
 
@@ -76,50 +92,46 @@ async def select_month(page, target_month: str) -> bool:
 
 
 async def get_total_pages(page) -> int:
-    """读取分页总页数"""
+    """从 #pageDiv 的"尾页" span 的 data-page 属性读取总页数。"""
     try:
-        # 常见分页结构：共 X 页
-        text = await page.locator(".pageBox, .pagination, [class*='page']").first.inner_text(timeout=4000)
-        import re
-        m = re.search(r"共\s*(\d+)\s*页", text)
-        if m:
-            return int(m.group(1))
+        # 优先：读"尾页" span 的 data-page（最精确）
+        last_pg = await page.locator("#pageDiv span:has-text('尾页')").first.get_attribute("data-page", timeout=3000)
+        if last_pg and last_pg.isdigit():
+            n = int(last_pg)
+            print(f"    共 {n} 页（来自尾页span）")
+            return n
     except Exception:
         pass
 
-    # 备用：找最大页码按钮
     try:
-        btns = await page.locator(".pageBox a, .pagination a").all_inner_texts()
-        nums = []
-        for t in btns:
-            t = t.strip()
-            if t.isdigit():
-                nums.append(int(t))
-        if nums:
-            return max(nums)
+        # 备用：从"共XX条"计算
+        text = await page.locator("#pageDiv").first.inner_text(timeout=3000)
+        m = re.search(r"共\s*(\d+)\s*条", text)
+        if m:
+            total_records = int(m.group(1))
+            pages = math.ceil(total_records / PAGE_SIZE)
+            print(f"    共 {total_records} 条 → {pages} 页")
+            return pages
     except Exception:
         pass
 
     return 1
 
 
-async def parse_table(page) -> list[dict]:
-    """解析当前页成交数据表格，返回行列表"""
+async def parse_table(page) -> list:
+    """解析当前页 #deallist 表格，返回行列表。"""
     rows = []
     try:
-        # 等待表格出现
-        await page.wait_for_selector("table tbody tr, .dealList tr", timeout=6000)
-        trs = await page.locator("table tbody tr").all()
+        await page.wait_for_selector("#deallist tr", timeout=6000)
+        trs = await page.locator("#deallist tr").all()
         for tr in trs:
             tds = await tr.locator("td").all_inner_texts()
             if len(tds) < 5:
                 continue
-            # 列顺序：成交月份、楼盘名称、区域、开发商、成交套数
-            try:
-                units_str = tds[4].strip().replace(",", "")
-                units = int(units_str) if units_str.isdigit() else 0
-            except Exception:
-                units = 0
+            # 列：成交月份 | 楼盘名称 | 区域 | 开发商 | 成交套数
+            units_raw = tds[4].strip()
+            m = re.search(r"(\d+)", units_raw)
+            units = int(m.group(1)) if m else 0
             rows.append({
                 "month": tds[0].strip(),
                 "project": tds[1].strip(),
@@ -132,107 +144,99 @@ async def parse_table(page) -> list[dict]:
     return rows
 
 
-async def go_to_next_page(page, current: int) -> bool:
-    """点击下一页，返回 False 表示已是最后一页"""
+async def go_to_next_page(page) -> bool:
+    """点击 #pageDiv 中的"下一页" span，返回 False 表示已是最后一页。"""
     try:
-        # 查找"下一页"按钮或 current+1 数字
-        next_btn = page.locator(f".pageBox a:has-text('{current + 1}'), .pagination a:has-text('{current + 1}')")
-        if await next_btn.count() > 0:
-            await next_btn.first.click()
-            await page.wait_for_load_state("networkidle", timeout=6000)
-            await page.wait_for_timeout(400)
-            return True
+        # fang.com 用 <span data-page="N">下一页</span>
+        nxt = page.locator("#pageDiv span:has-text('下一页')")
+        if await nxt.count() == 0:
+            return False
 
-        # 备用：找"下一页"文字按钮
-        nxt = page.locator(".pageBox a:has-text('下一页'), a:has-text('下一页')")
-        if await nxt.count() > 0:
-            cls = await nxt.first.get_attribute("class") or ""
-            if "disable" in cls or "disabled" in cls:
-                return False
-            await nxt.first.click()
-            await page.wait_for_load_state("networkidle", timeout=6000)
-            await page.wait_for_timeout(400)
-            return True
-    except Exception:
-        pass
-    return False
+        # 检查 data-page：如果等于当前已选中页（class="on"），说明已到最后
+        next_pg = await nxt.first.get_attribute("data-page", timeout=2000)
+        on_span = page.locator("#pageDiv span.on")
+        current_pg = None
+        if await on_span.count() > 0:
+            current_pg = await on_span.first.get_attribute("data-page", timeout=2000)
+
+        if next_pg and current_pg and next_pg == current_pg:
+            return False  # 下一页 == 当前页，已到最后
+
+        await nxt.first.click()
+        await page.wait_for_timeout(1200)
+        try:
+            await page.wait_for_load_state("networkidle", timeout=8000)
+        except Exception:
+            pass
+        await page.wait_for_timeout(400)
+        return True
+    except Exception as e:
+        print(f"    [!] 翻页异常: {e}")
+        return False
 
 
-async def scrape_month(page, target_month: str) -> dict | None:
-    """
-    抓取指定月份所有分页数据，返回汇总 dict 或 None。
-    """
+async def scrape_month(page, target_month: str) -> Optional[dict]:
+    """抓取指定月份所有分页数据，返回汇总 dict 或 None。"""
     print(f"  切换到 {target_month} …")
     ok = await select_month(page, target_month)
     if not ok:
         return None
 
-    # 验证页面确实切换到了目标月份
-    # （部分情况下切换失败仍显示旧月份）
+    # 验证第一行确实是目标月份
     try:
-        visible_month = await page.locator("#monthSelect .text_select, #monthSelect").inner_text(timeout=3000)
-        visible_month = visible_month.strip()
-        if target_month not in visible_month:
-            print(f"    [!] 月份切换可能失败，当前显示: {visible_month!r}")
-    except Exception:
-        pass
+        first_cell = await page.locator("#deallist tr td:first-child p").first.inner_text(timeout=3000)
+        print(f"    第一行月份: {first_cell.strip()!r}")
+        if target_month not in first_cell:
+            print(f"    [!] 月份未切换，跳过")
+            return None
+    except Exception as e:
+        print(f"    [!] 无法验证月份: {e}")
+        return None
 
-    all_rows: list[dict] = []
-    current_page = 1
     total_pages = await get_total_pages(page)
-    print(f"    共 {total_pages} 页")
 
-    while True:
+    all_rows = []
+    for current_page in range(1, total_pages + 1):
         rows = await parse_table(page)
         all_rows.extend(rows)
-        print(f"    第 {current_page} 页，获取 {len(rows)} 条")
+        print(f"    第 {current_page}/{total_pages} 页，获取 {len(rows)} 条")
         if current_page >= total_pages:
             break
-        ok = await go_to_next_page(page, current_page)
+        ok = await go_to_next_page(page)
         if not ok:
+            print(f"    没有下一页，停止")
             break
-        current_page += 1
 
     if not all_rows:
         print(f"    [!] {target_month} 无数据")
         return None
 
-    # 按区域汇总
-    by_district: dict[str, int] = {}
-    total = 0
-    for r in all_rows:
-        d = r["district"] or "未知"
-        by_district[d] = by_district.get(d, 0) + r["units"]
-        total += r["units"]
-
-    # 去重（同月项目可能重复出现在多页）
-    # 用 项目名+区域 做 key
-    seen: set[str] = set()
-    deduped: list[dict] = []
+    # 按区域汇总，并用 项目名|区域 去重
+    seen = set()
+    deduped = []
     for r in all_rows:
         key = r["project"] + "|" + r["district"]
         if key not in seen:
             seen.add(key)
             deduped.append(r)
 
-    by_district_dedup: dict[str, int] = {}
-    total_dedup = 0
+    by_district = {}
+    total = 0
     for r in deduped:
         d = r["district"] or "未知"
-        by_district_dedup[d] = by_district_dedup.get(d, 0) + r["units"]
-        total_dedup += r["units"]
+        by_district[d] = by_district.get(d, 0) + r["units"]
+        total += r["units"]
 
     return {
         "month": target_month,
-        "total": total_dedup,
-        "by_district": dict(sorted(by_district_dedup.items(), key=lambda x: -x[1])),
+        "total": total,
+        "by_district": dict(sorted(by_district.items(), key=lambda x: -x[1])),
         "project_count": len(deduped),
     }
 
 
 async def main():
-    # 解析参数
-    n_months = DEFAULT_MONTHS
+    n_months = 12
     for arg in sys.argv[1:]:
         if arg.startswith("--months="):
             n_months = int(arg.split("=")[1])
@@ -240,26 +244,32 @@ async def main():
     targets = month_list(n_months)
     print(f"计划抓取月份: {targets}")
 
-    # 读取现有数据
     if DATA_FILE.exists():
         with open(DATA_FILE, "r", encoding="utf-8") as f:
             existing = json.load(f)
     else:
-        existing = {"updated": "", "source": "房天下-上海新房成交备案", "source_url": URL, "monthly": []}
+        existing = {
+            "updated": "",
+            "source": "房天下-上海新房成交备案",
+            "source_url": URL,
+            "note": "数据来源房天下平台备案记录，按楼盘去重后汇总成交套数。",
+            "monthly": [],
+        }
 
     existing_months = {m["month"]: i for i, m in enumerate(existing["monthly"])}
 
     async with async_playwright() as pw:
-        browser = await pw.chromium.launch_persistent_context(
-            user_data_dir=str(CHROME_PROFILE),
+        browser = await pw.chromium.launch(
+            executable_path="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
             headless=False,
             args=["--no-first-run", "--no-default-browser-check"],
         )
-        page = browser.pages[0] if browser.pages else await browser.new_page()
+        page = await browser.new_page()
 
         print(f"打开页面: {URL}")
-        await page.goto(URL, wait_until="networkidle", timeout=30000)
-        await page.wait_for_timeout(1500)
+        await page.goto(URL, wait_until="load", timeout=30000)
+        await page.wait_for_selector("#deallist tr", timeout=15000)
+        await page.wait_for_timeout(1000)
 
         for month in targets:
             print(f"\n[月份] {month}")
@@ -277,7 +287,6 @@ async def main():
 
         await browser.close()
 
-    # 按月份排序
     existing["monthly"].sort(key=lambda x: x["month"])
     existing["updated"] = date.today().isoformat()
 
